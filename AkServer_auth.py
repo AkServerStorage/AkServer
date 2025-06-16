@@ -1,5 +1,5 @@
 import secrets
-import random
+import random # For OTP generation
 import time
 import logging
 from http.cookies import SimpleCookie # For type hinting and potential direct use
@@ -15,16 +15,15 @@ SESSION_VALIDITY_DURATION = 3600  # 1 hour for IP based sessions
 DEVICE_TOKEN_COOKIE_NAME = "AkServer_device_token"
 DEVICE_TOKEN_VALIDITY_SECONDS = 30 * 24 * 60 * 60  # 30 days
 
-# --- Module State ---
+# --- Module State (In-memory, lost on server restart) ---
 _current_otp = None
 _otp_generation_time = 0
-# _otp_last_request_time = 0 # This seemed to be for a specific client polling feature, can be re-added if needed
 
 # Dictionaries to store session states, keyed by client_ip
 _pending_device_registration = {} # IPs that passed OTP, awaiting device name
 _authenticated_sessions = {}    # IPs that are fully authenticated
 
-# Logger instance, to be set by the main server
+# Logger instance, injected by the main server via init_auth_module
 _logger = None
 
 def init_auth_module(logger_instance: logging.Logger):
@@ -33,7 +32,7 @@ def init_auth_module(logger_instance: logging.Logger):
     if _logger:
         _logger.info("Authentication module initialized.")
 
-def _log(level, message, exc_info=False):
+def _log(level, message, exc_info=False): # sourcery skip: instance-method-first-arg-name
     if _logger:
         _logger.log(level, f"[Auth] {message}", exc_info=exc_info)
     else:
@@ -58,20 +57,6 @@ def request_new_otp() -> str | None:
     _otp_generation_time = time.time()
     _log(logging.INFO, f"New OTP generated: {_current_otp}")
     return _current_otp
-
-def get_otp_status_for_client() -> dict:
-    """
-    Checks if the current OTP is valid for a client request.
-    """
-    if not _current_otp:
-        return {"success": False, "message": "OTP not available."}
-    
-    now = time.time()
-    if (now - _otp_generation_time) < OTP_VALIDITY_DURATION:
-        return {"success": True, "otp": _current_otp}
-    else:
-        _log(logging.INFO, "OTP status requested, but OTP has expired.")
-        return {"success": False, "message": "OTP expired."}
 
 def verify_otp_and_mark_pending(submitted_otp: str, client_ip: str) -> tuple[bool, str]:
     """
@@ -111,7 +96,6 @@ def complete_device_registration(client_ip: str, device_name: str,
     """
     global _authenticated_sessions, _pending_device_registration
     if not is_client_pending_registration(client_ip): # Uses the timeout logic within
-        _log(logging.WARNING, f"Attempt to complete registration for {client_ip} not in valid pending state.")
         return None
 
     new_device_token = generate_device_token()
@@ -126,7 +110,7 @@ def complete_device_registration(client_ip: str, device_name: str,
         "source": "otp_registration"
     }
     _log(logging.INFO, f"Device '{device_name}' registered for {client_ip} with token ...{new_device_token[-6:]}.")
-
+    
     if client_ip in _pending_device_registration: # Should be true, but good to check
         del _pending_device_registration[client_ip]
     
@@ -197,7 +181,6 @@ def clear_ip_session_on_token_forget(ip_address: str):
     """Clears an IP session if its associated token was forgotten."""
     global _authenticated_sessions
     if ip_address and ip_address != "unknown" and ip_address in _authenticated_sessions:
-        # Check if the session was from a device_token, to be more precise, but for now, any session for that IP.
         session_name = _authenticated_sessions[ip_address].get("name", "N/A")
         del _authenticated_sessions[ip_address]
         _log(logging.INFO, f"Cleared active IP-based session for {ip_address} (Name: {session_name}) as its token was likely forgotten.")

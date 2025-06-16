@@ -13,6 +13,13 @@ LOGIN_FORM_HTML = r"""
             margin: 0;
             min-height: 100vh;
         }}
+        .header-logo {{
+            display: block;
+            margin: 10px auto 5px auto; /* top auto bottom auto */
+            max-height: 40px; /* Adjust size as needed */
+        }}
+        h2 {{ text-align: center; }}
+
         .container {{
             background-color: #fff;
             padding: 20px;
@@ -55,6 +62,7 @@ LOGIN_FORM_HTML = r"""
 </head>
 <body>
     <div class="container">
+        <img src="/logo.png" alt="AkServer Logo" class="header-logo">
         <h2>AkServer Login</h2>
         <form id="otpForm" action="/login" method="post" autocomplete="off">
             <div class="otp-inputs">
@@ -99,6 +107,9 @@ LOGIN_FORM_HTML = r"""
             }}
         }});
     </script>
+    <div style="text-align: center; margin-top: 30px; font-size: 0.8em; color: #777;">
+        © 2025 AkServer. All rights reserved.
+    </div>
 </body>
 </html>
 """
@@ -111,6 +122,12 @@ UPLOAD_FORM_HTML = r"""
     <title>AkServer</title>
     <style>
         body {{ font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; background-color: #f4f4f4; margin: 20px; }}
+        .header-logo {{
+            display: block;
+            margin: 0 auto 10px auto; /* Center and add some bottom margin */
+            max-height: 40px; /* Adjust size as needed */
+        }}
+        h2 {{ text-align: center; }}
         .container {{ background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 90%; max-width: 600px; }}
         .nav-links {{ margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; width: 100%;}}
         .nav-links a {{ text-decoration: none; padding: 8px 12px; background-color: #17a2b8; color: white; border-radius: 4px; font-size: 0.9em; }}
@@ -128,6 +145,11 @@ UPLOAD_FORM_HTML = r"""
             width: fit-content;
         }}
         .message {{ margin-top: 15px; text-align: center; }}
+        .trial-status {{ text-align: center; font-size: 0.85em; padding: 5px; margin-bottom: 10px; border-radius: 3px; }}
+        .trial-active {{ background-color: #e6ffed; color: #28a745; border: 1px solid #c3e6cb; }}
+        .trial-expired {{ background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }}
+        .trial-unavailable {{ background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }}
+
         .logout-link {{ display: block; text-align: right; margin-bottom: 10px; }}
     </style>
 </head>
@@ -137,7 +159,9 @@ UPLOAD_FORM_HTML = r"""
             <a href="/view_files">View Uploaded Files</a>
             {logout_placeholder}
         </div>
+        <img src="/logo.png" alt="AkServer Logo" class="header-logo">
         <h2>AkServer</h2>
+        {trial_message_placeholder}
         <form id="uploadForm" method="post" enctype="multipart/form-data">
             <label for="fileUploadInput" class="file-upload-label">
                 Choose Folder to Sync
@@ -146,6 +170,9 @@ UPLOAD_FORM_HTML = r"""
             <!-- Sync button and folderSelectionInfo div are removed for automatic upload -->
         </form>
         <div class="message" id="uploadMessage">{message_placeholder}</div>
+        <div style="text-align: center; margin-top: 20px; font-size: 0.8em;">
+            <a href="https://forms.gle/mWgUnNddhLbAyg3x8" target="_blank" style="color: #007bff; text-decoration: none;">Provide Feedback</a>
+        </div>
     </div>
     <script>
         const uploadForm = document.getElementById('uploadForm');
@@ -176,15 +203,14 @@ UPLOAD_FORM_HTML = r"""
                     return response.json()
                         .catch(() => {{ // If response body is not JSON or parsing fails
                             throw new Error(`Server error: $\{{response.status}} $\{{response.statusText}}`);
-                        }})
-                        .then(errorData => {{ // If JSON error message from server
-                            throw new Error(errorData.message || `Server error: $\{{response.status}}`);
                         }});
                 }}
                 return response.json(); // If response.ok, parse JSON
             }})
             .then(data => {{
-                if(data.success) {{
+                // Check if data itself indicates success, which is expected for a successful JSON response
+                // This 'data' object comes from response.json()
+                if(data && data.success) {{ 
                     messageDiv.textContent = data.message + (data.files ? ' Files: ' + data.files.join(', ') : '');
                     messageDiv.style.color = 'green';
                 }} else {{
@@ -204,6 +230,9 @@ UPLOAD_FORM_HTML = r"""
         // and immediately attempt to upload.
         fileInput.addEventListener('change', performUpload);
     </script>
+    <div style="text-align: center; margin-top: 30px; font-size: 0.8em; color: #777;">
+        © 2025 AkServer. All rights reserved.
+    </div>
 </body>
 </html>
 """
@@ -221,6 +250,11 @@ VIEW_FILES_HTML = r"""
             margin: 0; 
             background-color: #f0f0f0; /* Lightest gray for overall page background */
         }}
+        .header-logo-container {{ /* For view_files, to place logo inside nav bar */
+            text-align: center;
+            padding-bottom: 10px;
+        }}
+        .header-logo {{ max-height: 30px; }} /* Slightly smaller for this page */
         .container {{ 
             background-color: #fff; /* White background for the main content block */
             width: 100%; 
@@ -317,6 +351,12 @@ VIEW_FILES_HTML = r"""
         .message.error {{ background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }}
         .message.info {{ background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }}
     </style>
+    <style> /* Duplicating trial status styles here for self-containment, or use a shared CSS */
+        .trial-status {{ text-align: center; font-size: 0.85em; padding: 5px; margin: 0 15px 10px 15px; border-radius: 3px; }}
+        .trial-active {{ background-color: #e6ffed; color: #28a745; border: 1px solid #c3e6cb; }}
+        .trial-expired {{ background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }}
+        .trial-unavailable {{ background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }}
+    </style>
 </head>
 <body>
     <div class="container">
@@ -325,12 +365,22 @@ VIEW_FILES_HTML = r"""
                 <a href="/" class="back-link">&larr; Back to Upload</a>
                 {logout_placeholder}
             </div>
+            <div class="header-logo-container">
+                <img src="/logo.png" alt="AkServer Logo" class="header-logo">
+            </div>
         </div>
         <h2 class="gallery-title">Uploaded Files</h2>
+        {trial_message_placeholder}
         {message_placeholder}
         <ul class="file-list">
             {file_list_items}
         </ul>
+        <div style="text-align: center; padding: 10px 0; font-size: 0.8em;">
+            <a href="https://forms.gle/mmATvTDQi6mBqA1x9" target="_blank" style="color: #007bff; text-decoration: none;">Provide Feedback</a>
+        </div>
+        <div style="text-align: center; padding-bottom: 10px; font-size: 0.8em; color: #777;">
+            © 2025 AkServer. All rights reserved.
+        </div>
     </div>
 </body>
 </html>
@@ -344,6 +394,12 @@ DEVICE_NAME_FORM_HTML = r"""
     <title>Register Device - AkServer</title>
     <style>
         body {{ font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; min-height: 100vh; }}
+        .header-logo {{
+            display: block;
+            margin: 10px auto 5px auto;
+            max-height: 40px; /* Adjust size as needed */
+        }}
+        h2 {{ text-align: center; }}
         .container {{ background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; width: 350px; margin: 40px auto 0 auto; }}
         input[type="text"] {{ padding: 10px; margin-bottom: 20px; width: calc(100% - 22px); border: 1px solid #ddd; border-radius: 4px; }}
         button {{ background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }}
@@ -353,12 +409,16 @@ DEVICE_NAME_FORM_HTML = r"""
 </head><body>
     <div class="container">
         <h2>Register Your Device</h2>
+        <img src="/logo.png" alt="AkServer Logo" class="header-logo">
         <p>Please enter a name for this device. This name will help you identify it later.</p>
         <form action="/submit_device_name" method="post" autocomplete="off">
             <input type="text" name="device_name" placeholder="Enter Device Name (e.g., My Phone)" maxlength="50" required autofocus><br>
             <button type="submit">Save Device Name</button>
         </form>
         {message_placeholder}
+        <div style="text-align: center; margin-top: 30px; font-size: 0.8em; color: #777;">
+            © 2025 AkServer. All rights reserved.
+        </div>
     </div>
 </body></html>
 """

@@ -1,12 +1,8 @@
-# File: c:\Users\Aksha\Desktop\AkServer_trusted_device_manager.py
 import json
 import os
 import time
 import logging # For type hinting logger parameter
 
-# This list will store the trusted device tokens in memory.
-# It will be populated by load_trusted_devices_from_file()
-# and modified by add_trusted_device() and forget_device_by_partial_token().
 _TRUSTED_DEVICE_TOKENS = [] # Underscore to indicate module-internal state
 
 def load_trusted_devices_from_file(file_path: str, logger: logging.Logger):
@@ -23,7 +19,7 @@ def load_trusted_devices_from_file(file_path: str, logger: logging.Logger):
                 data = json.loads(content)
 
             if isinstance(data, list):
-                if not data: # Empty list in JSON file
+                if not data:
                     _TRUSTED_DEVICE_TOKENS = []
                 elif all(isinstance(item, dict) and "token" in item and "name" in item and "origin_ip" in item and "timestamp" in item for item in data):
                     _TRUSTED_DEVICE_TOKENS = data
@@ -104,4 +100,3 @@ def forget_device_by_partial_token_suffix(token_suffix: str, file_path_for_savin
     else:
         logger.warning(f"Device token ending with {token_suffix} not found for forgetting.")
         return None
-

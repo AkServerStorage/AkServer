@@ -13,7 +13,7 @@ def generate_self_signed_cert(cert_path: str, key_path: str, hostname: str = "lo
     if logger:
         logger.info(f"Generating new self-signed SSL certificate for {hostname}...")
     else:
-        print(f"Generating new self-signed SSL certificate for {hostname}...") # Fallback if no logger
+        print(f"Generating new self-signed SSL certificate for {hostname}...")
 
     key = rsa.generate_private_key(public_exponent=65537, key_size=2048)
     private_key_pem = key.private_bytes(

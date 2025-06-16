@@ -3,28 +3,42 @@ import sys
 import json
 import shutil
 from urllib.parse import parse_qs, quote, unquote
+import html # For XSS protection
 import hashlib
 import mimetypes
 from werkzeug.formparser import parse_form_data
 
-from AkServer_HTML import UPLOAD_FORM_HTML, LOGIN_FORM_HTML, VIEW_FILES_HTML, DEVICE_NAME_FORM_HTML # type: ignore
-import AkServer_auth # type: ignore
-import AkServer_trusted_device_manager # type: ignore
+from AkServer_HTML import UPLOAD_FORM_HTML, LOGIN_FORM_HTML, VIEW_FILES_HTML, DEVICE_NAME_FORM_HTML 
+import AkServer_auth
+import AkServer_trusted_device_manager 
 
-# Note: server_logger is accessed via handler.server_logger
-# Note: SAVE_DIR, AUTH_ENABLED, TRUSTED_DEVICES_FILE are accessed via handler instance
+def _get_trial_message_html(handler) -> str:
+    """Helper function to generate trial status HTML."""
+    if hasattr(handler, 'trial_manager_instance') and handler.trial_manager_instance:
+        is_trial_active, days_left, expiry_dt = handler.trial_manager_instance.get_trial_status()
+        if not is_trial_active and expiry_dt: # Expired
+            return "<div class='trial-status trial-expired'>Trial Expired.</div>"
+        if is_trial_active and days_left is not None:
+            return f"<div class='trial-status trial-active'>Trial: {days_left} days remaining.</div>"
+    return "<div class='trial-status trial-unavailable'>Trial status unavailable.</div>" # Fallback
 
 def handle_get_root(handler, message):
     """Handles GET requests for the root path ('/')."""
+    trial_message_html = _get_trial_message_html(handler)
+
     if handler.AUTH_ENABLED and not handler._is_authenticated():
         handler._redirect("/login")
         return
-
+    
     logout_link = '<a href="/logout" class="logout-link">Logout</a>' if handler.AUTH_ENABLED else ''
+    
+
     html_content = UPLOAD_FORM_HTML.format(
-        logout_placeholder=logout_link,
-        message_placeholder=f"<div class='message'>{message}</div>" if message else ""
+        logout_placeholder=logout_link, # Safe, server-generated
+        message_placeholder=f"<div class='message'>{message}</div>" if message else "",
+        trial_message_placeholder=trial_message_html
     )
+
     handler._send_response_data(html_content.encode('utf-8'))
 
 def handle_get_login_page(handler, message):
@@ -33,13 +47,15 @@ def handle_get_login_page(handler, message):
         if handler._is_authenticated():
             handler._redirect("/")
             return
-        html_content = LOGIN_FORM_HTML.format(message_placeholder=f"<div class='message'>{message}</div>" if message else "")
+        html_content = LOGIN_FORM_HTML.format(message_placeholder=f"<div class='message'>{message}</div>" if message else "") # type: ignore
         handler._send_response_data(html_content.encode('utf-8'))
     else:
         handler._redirect("/")
 
 def handle_get_view_files(handler):
     """Handles GET requests for /view_files."""
+    trial_message_html = _get_trial_message_html(handler)
+
     if handler.AUTH_ENABLED and not handler._is_authenticated():
         handler._redirect("/login")
         return
@@ -63,13 +79,14 @@ def handle_get_view_files(handler):
                 if os.path.isfile(item_path):
                     files_found = True
                     filename_url_encoded = quote(item_name)
+                    escaped_item_name = html.escape(item_name)
                     file_link = f'/files/{filename_url_encoded}'
 
                     file_list_html += f'<li class="file-item">'
                     file_list_html += '<div class="media-container">'
                     item_lower = item_name.lower()
                     if item_lower.endswith(image_extensions):
-                        file_list_html += f'<a href="{file_link}" target="_blank"><img src="{file_link}" alt="Preview of {item_name}"></a>'
+                        file_list_html += f'<a href="{file_link}" target="_blank"><img src="{file_link}" alt="Preview of {escaped_item_name}"></a>'
                     elif item_lower.endswith(video_extensions):
                         guessed_type, _ = mimetypes.guess_type(item_name)
                         video_type = guessed_type or "video/mp4"
@@ -77,10 +94,10 @@ def handle_get_view_files(handler):
                     else:
                         file_list_html += f'<div class="no-preview"><span>No preview available.<br>Click name to view/download.</span></div>'
                     file_list_html += '</div>'
-                    file_list_html += f'<a href="{file_link}" target="_blank" class="file-name-link" title="{item_name}">{item_name}</a>'
+                    file_list_html += f'<a href="{file_link}" target="_blank" class="file-name-link" title="{escaped_item_name}">{escaped_item_name}</a>'
                     file_list_html += (
-                        f'<form method="POST" action="/download" style="text-align: center; margin-top: 3px; margin-bottom: 3px;">\n'
-                        f'    <input type="hidden" name="filename" value="{item_name}">\n'
+                        f'<form method="POST" action="/download" style="text-align: center; margin-top: 3px; margin-bottom: 3px;">\n' # NOSONAR
+                            f'    <input type="hidden" name="filename" value="{html.escape(item_name)}">\n' # Value is data, should be original. HTML escaping for attribute context.
                         f'    <button type="submit" style="padding: 3px 7px; font-size: 0.7em; background-color: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">Download</button>\n'
                         f'</form>\n')
                     file_list_html += f'</li>'
@@ -89,16 +106,18 @@ def handle_get_view_files(handler):
         html_content = VIEW_FILES_HTML.format(
             logout_placeholder=logout_link_html,
             file_list_items=file_list_html if files_found else "<li class='file-item'>No files found.</li>",
-            message_placeholder=f"<div class='message {message_class}'>{message_content}</div>" if message_content else ""
-        )
+            message_placeholder=f"<div class='message {message_class}'>{html.escape(message_content)}</div>" if message_content else "",
+            trial_message_placeholder=trial_message_html
+        ) # type: ignore
         handler._send_response_data(html_content.encode('utf-8'))
     except Exception as e:
         handler.server_logger.error(f"Error generating file list for /view_files from {handler.client_address[0]}: {e}", exc_info=True)
         error_html = VIEW_FILES_HTML.format(
             logout_placeholder=logout_link_html,
             file_list_items="<li class='file-item'>Error loading files.</li>",
-            message_placeholder=f"<div class='message error'>Server error occurred while listing files.</div>"
-        )
+            message_placeholder=f"<div class='message error'>Server error occurred while listing files.</div>",
+            trial_message_placeholder=trial_message_html
+        ) # type: ignore
         handler._send_response_data(error_html.encode('utf-8'), code=500)
 
 
@@ -140,13 +159,13 @@ def handle_post_submit_device_name(handler):
 
     if not submitted_device_name:
         handler.server_logger.warning(f"Device name not provided by {client_ip} during registration.")
-        handler._redirect("/register_device_name?message=Device name is required.")
+        handler._redirect("/register_device_name?message=Device%20name%20is%20required.")
         return
 
     new_device_token = AkServer_auth.complete_device_registration(
         client_ip, submitted_device_name,
         AkServer_trusted_device_manager,
-        handler.TRUSTED_DEVICES_FILE # Access from handler instance
+        handler.TRUSTED_DEVICES_FILE
     )
 
     if new_device_token:
@@ -208,5 +227,3 @@ def handle_post_upload(handler):
     except Exception as e:
         handler.server_logger.error(f"Error processing upload from {handler.client_address[0]}: {e}", exc_info=True)
         handler._send_response_data(json.dumps({"success": False, "message": f"Server error during upload: {e}"}).encode(), 'application/json', 500)
-
-# Add other handler functions (handle_get_request_otp, handle_get_get_otp, handle_get_logout, etc.) here following the same pattern.
