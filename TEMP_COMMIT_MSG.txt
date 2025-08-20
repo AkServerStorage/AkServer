@@ -1,8 +1,11 @@
 [Task: Task ID] Milestone/Step
 
-Problem: Cause:
-Solution: Notes: (Any design choices, bugs, or references discussed)
-Next Steps / Pending: start with init and main py file and inistialising it.
-Why Useful: Problem:
+Problem: Prototype design lacked structure, mixing logic in single files.
+Solution: Refactored into standardized folder layout with designated modules for server, auth, analytics, etc.
+Why Useful: Enforces maintainable architecture
+
+Clear separation of concerns for production scaling
+
+Enables testing, packaging, CI/CD, and collaboration
 Files: Files Affected
 Module: Module / Folder
