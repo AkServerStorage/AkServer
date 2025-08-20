@@ -1,0 +1,19 @@
+{
+  "modules": {
+    "akserver\\main.py": {
+      "imports": [],
+      "classes": [],
+      "functions": [],
+      "content": ""
+    },
+    "akserver\\__init__.py": {
+      "imports": [],
+      "classes": [],
+      "functions": [],
+      "content": ""
+    }
+  },
+  "tasks": [
+    "\ud83d\udcd8 AkServer Production Task Log\nDate: 2025-08-20\nTask ID: 20250820174646\nMilestone/Step: General Task\nStatus: To Do\nProgress: 0%\n\nModule / Folder: \nFiles Affected: \nSub-parts / Dependencies: \n\nBefore:\n\n\nAfter:\n\n\nWhy useful: \n\nProblem: \nCause: \nSolution: \nNotes: (Any design choices, bugs, or references discussed)\nNext Steps / Pending: start with init and main py file and inistialising it.\n\nFocus: AkServer architechture i.e folder structuring.\nAuthor / Comments: N/A\n\n--- Code Diff ---\nNo code changes detected."
+  ]
+}

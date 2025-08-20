@@ -1,0 +1,30 @@
+📘 AkServer Production Task Log
+Date: 2025-08-20
+Task ID: 20250820174646
+Milestone/Step: General Task
+Status: To Do
+Progress: 0%
+
+Module / Folder: 
+Files Affected: 
+Sub-parts / Dependencies: 
+
+Before:
+
+
+After:
+
+
+Why useful: 
+
+Problem: 
+Cause: 
+Solution: 
+Notes: (Any design choices, bugs, or references discussed)
+Next Steps / Pending: start with init and main py file and inistialising it.
+
+Focus: AkServer architechture i.e folder structuring.
+Author / Comments: N/A
+
+--- Code Diff ---
+No code changes detected.
