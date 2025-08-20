@@ -1,7 +1,8 @@
-Task 20250820174907: update
+[Task: Task ID] Milestone/Step
 
-Problem: 
-Solution: 
-Why useful: 
-Files: 
-Module: 
+Problem: Cause:
+Solution: Notes: (Any design choices, bugs, or references discussed)
+Next Steps / Pending: start with init and main py file and inistialising it.
+Why Useful: Problem:
+Files: Files Affected
+Module: Module / Folder

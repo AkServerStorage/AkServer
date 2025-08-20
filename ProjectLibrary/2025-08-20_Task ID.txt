@@ -1,0 +1,53 @@
+📘 AkServer Production Task Log
+Date: 2025-08-20
+Task ID: Task ID
+Milestone/Step: Milestone/Step
+Status: To Do
+Progress: 0%
+
+Module / Folder: Module / Folder
+Files Affected: Files Affected
+Sub-parts / Dependencies: 
+
+🔹 Before
+After:
+
+🔹 After
+Why useful:
+
+🔹 Why Useful
+Problem:
+
+🔹 Problem
+Cause:
+
+🔹 Cause
+Solution:
+
+🔹 Solution
+Notes: (Any design choices, bugs, or references discussed)
+Next Steps / Pending: start with init and main py file and inistialising it.
+
+🔹 Notes
+(Any design choices, bugs, or references discussed)
+Next Steps / Pending: start with init and main py file and inistialising it.
+
+🔹 Focus (Session Goal)
+AkServer architechture i.e folder structuring.
+Author / Comments: N/A
+
+--- Code Diff ---
+No code changes detected.
+
+🔹 Progress
+✅ 0%
+✅ Module / Folder:
+
+🔹 Pending / Next Steps
+• start with init and main py file and inistialising it.
+
+📂 Snapshot
+
+
+--- Code Diff ---
+No code changes detected.
