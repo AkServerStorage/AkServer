@@ -1,0 +1,445 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>akserver</title>
+  <style>
+    :root {
+      --bg-color: #f0f2f5;
+      --card-bg: #ffffff;
+      --accent-color: #4dabf7;
+      --text-color: #333333;
+      --button-bg: #4dabf7;
+      --button-text: #ffffff;
+    }
+    * {
+      box-sizing: border-box;
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      font-family: 'Segoe UI', sans-serif;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-top: 24px;
+      padding-bottom: 160px;
+    }
+    .container {
+      width: 90%;
+      background-color: var(--card-bg);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      position: relative;
+    }
+    .logo {
+      display: block;
+      margin: 0 auto 16px auto;
+      max-height: 80px;
+      border-radius: 12px;
+      border: 1px solid #f1f1f1;
+      background-color: #fff;
+      padding: 4px;
+    }
+    h2 {
+      text-align: center;
+      font-size: 1.4em;
+      margin: 4px 0 12px 0;
+    }
+    .tagline {
+      text-align: center;
+      font-size: 0.95em;
+      color: #6c757d;
+      margin-top: -10px;
+      margin-bottom: 16px;
+      font-style: italic;
+    }
+    .nav-links {
+      margin: 24px 0;
+    }
+    .button-like,
+    .file-upload-label {
+      background-color: var(--button-bg);
+      color: var(--button-text);
+      padding: 14px;
+      border-radius: 8px;
+      font-size: 1.1em;
+      font-weight: 500;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      box-shadow: 0 4px 0 rgba(0, 0, 0, 0.15);
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
+      margin-bottom: 16px;
+    }
+    .button-like:active,
+    .file-upload-label:active {
+      transform: translateY(2px);
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.15);
+    }
+    .blue-button { background-color: var(--button-bg); }
+    .emoji {
+      display: inline-block;
+      vertical-align: middle;
+      font-size: 1.2em;
+    }
+    .label {
+      display: inline-block;
+      vertical-align: middle;
+      margin-left: 8px;
+      padding-top: 1px;
+    }
+    input[type="file"] {
+      display: none;
+    }
+    #uploadForm {
+      margin: 0;
+    }
+    .message {
+      margin-top: 12px;
+      text-align: center;
+      font-size: 0.95em;
+    }
+    .logout-link {
+      text-align: right;
+      font-size: 0.9em;
+      margin-top: 12px;
+      color: #6c757d;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.85em;
+      color: #777;
+      margin: 10px 0 24px 0;
+    }
+    .footer a {
+      color: #007bff;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+    .footer a:hover {
+      text-decoration: underline;
+    }
+    .trial-overlay-inside {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #eef6ff;
+      color: #007bff;
+      border: 1px solid #cce4ff;
+      padding: 5px 12px;
+      font-size: 0.85em;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+      z-index: 999;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+    #syncSpinner svg {
+      display: block;
+      margin: 0 auto;
+    }
+    .button-icon {
+      width: 25px;
+      height: 25px;
+      vertical-align: middle;
+      margin-right: 8px;
+      color: #fff; /* Match your theme */
+    }
+    .file-upload-label svg {
+      margin-right: 8px;
+      vertical-align: middle;
+      stroke: #ffffff; /* match text color or override if needed */
+      width: 20px;
+      height: 20px;
+      transition: transform 0.2s ease;
+    }
+
+    .file-upload-label:hover svg {
+      transform: scale(1.05);
+      stroke: #e0e0e0; /* subtle on hover */
+    }
+    
+    
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="/static/akserver_logo.png" alt="akserver Logo" class="logo" />
+    <h2>AkServer</h2>
+    <p class="tagline">Be Your Own Cloud</p>
+    <div class="nav-links">
+
+      <!-- My Drive Button -->
+      <a href="/view_files" class="button-like">
+        <span style="display: flex; align-items: center; justify-content: center; gap: 6px; padding-right: 20px; min-width: 180px">
+          <svg class="button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 2a5.53 5.53 0 0 0-3.594 1.342c-.766.66-1.321 1.52-1.464 2.383C1.266 6.095 0 7.555 0 9.318 0 11.366 1.708 13 3.781 13h8.906C14.502 13 16 11.57 16 9.773c0-1.636-1.242-2.969-2.834-3.194C12.923 3.999 10.69 2 8 2m2.354 4.854-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7 8.793l2.646-2.647a.5.5 0 0 1 .708.708"/>
+          </svg>
+          <span class="label">My Drive</span>
+        </span>
+      </a>
+
+      <!-- Upload Form -->
+      <form id="uploadForm" method="post" enctype="multipart/form-data">
+      <input type="hidden" id="uploadToken" name="upload_token" value="{{upload_token}}">
+
+        <!-- Sync Folder Button -->
+        <label for="fileUploadInputFolder" class="file-upload-label blue-button">
+          <span style="display: flex; align-items: center; justify-content: center; gap: 6px; padding-right: 0px; min-width: 180px">
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.13-3.36L23 10M1 14l5.36 5.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            <span class="label">Sync Folder</span>
+          </span>
+        </label>
+        <input type="file" id="fileUploadInputFolder" name="files[]" multiple webkitdirectory directory />
+
+        <!-- Upload a File Button -->
+        <label for="fileUploadInputIndividual" class="file-upload-label blue-button">
+          <span style="display: flex; align-items: center; justify-content: center; gap: 6px; padding-left: 8px; min-width: 180px">
+            <svg xmlns="http://www.w3.org/2000/svg" class="lucide" width="18" height="18" viewBox="0 0 24 24" fill="none" 
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                style="margin-right: 8px;">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <span class="label">Upload a File</span>
+          </span>
+        </label>
+        <input type="file" id="fileUploadInputIndividual" name="files[]" multiple />
+      </form>
+    </div>
+    <div class="logout-link">{{logout_placeholder}}</div>
+  </div>
+  
+  <div class="message" id="uploadMessage">
+    <div id="syncSpinner" style="display: none;">
+      <svg width="28" height="28" viewBox="0 0 38 38" xmlns="http://www.w3.org/2000/svg" stroke="#007bff">
+        <g fill="none" fill-rule="evenodd">
+          <g transform="translate(1 1)" stroke-width="3">
+            <circle stroke-opacity=".3" cx="18" cy="18" r="18" />
+            <path d="M36 18c0-9.94-8.06-18-18-18">
+              <animateTransform
+                attributeName="transform"
+                type="rotate"
+                from="0 18 18"
+                to="360 18 18"
+                dur="1s"
+                repeatCount="indefinite" />
+            </path>
+          </g>
+        </g>
+      </svg>
+      <div style="margin-top: 8px; font-size: 0.9em;">Syncing...</div>
+      <div style="margin-top: 12px; font-size: 0.7em;">Keep this window active during upload</div>
+    </div>
+    <span id="messageText">{{message_placeholder}}</span>
+  </div>
+
+  
+  <div class="trial-overlay-inside">{{trial_message_placeholder}}</div>
+  <div class="footer">© 2025 akserver. All rights reserved.</div>  
+  <link rel="stylesheet" href="https://akserverstorage.github.io/akserver_announcement/iframe_style.css">  
+  <iframe
+    id="announcementFrame"
+    class="akserver-announcement-frame"
+    src="https://akserverstorage.github.io/akserver_announcement/?ts={cache_buster}"
+    sandbox="allow-same-origin allow-scripts allow-popups allow-popups-to-escape-sandbox"
+    loading="lazy"
+  ></iframe>
+  
+  <script>
+    window.addEventListener("load", () => {
+      if (!navigator.onLine) {
+        document.getElementById("announcementFrame").style.display = "none";
+      }
+    });
+  </script>
+  
+  <div id="infoIcon" onclick="toggleInfoMode()"
+      style="position: fixed; top: 30px; right: 30px; z-index: 1000; cursor: pointer; color: #000;">
+    <!-- Info Icon -->
+    <svg id="iconInfo" xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+        fill="currentColor" viewBox="0 0 16 16" style="display: inline-block;">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0z"/>
+      <path d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 
+                3.468c-.194.897.105 1.319.808 1.319.545 
+                0 .877-.252 1.004-.598l.088-.416c.076-.347.133-.518.372-
+                .566l.451-.083.082-.38-1.571-.287c-.24-.044-.345-
+                .176-.288-.469l.738-3.468c.194-.897-.105-1.319-.808-
+                1.319-.545 0-.877.252-1.004.598l-.088.416c-.076.347-
+                .133.518-.372.566l-.451.083-.082.38 1.571.287c.24.044.
+                345.176.288.469z"/>
+      <circle cx="8" cy="4.5" r="1"/>
+    </svg>
+
+    <!-- Close Icon -->
+    <svg id="iconClose" xmlns="http://www.w3.org/2000/svg" width="28" height="28"
+        fill="currentColor" viewBox="0 0 16 16" style="display: none;">
+      <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zM8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0z"/>
+      <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 
+              .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 
+              8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 
+              8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+    </svg>
+  </div>
+  <script>
+    let infoMode = false;
+    const frame = document.getElementById("announcementFrame");
+    const iconInfo = document.getElementById("iconInfo");
+    const iconClose = document.getElementById("iconClose");
+
+    function toggleInfoMode() {
+      if (!frame) return;
+      const timestamp = Date.now();
+
+      if (!infoMode) {
+        frame.src = "https://akserverstorage.github.io/akserver_announcement/help_info.html?ts=" + timestamp;
+        frame.style.height = "90vh";
+        iconInfo.style.display = "none";
+        iconClose.style.display = "inline-block";
+      } else {
+        frame.src = "https://akserverstorage.github.io/akserver_announcement/?ts=" + timestamp;
+        frame.style.height = "100px";
+        iconInfo.style.display = "inline-block";
+        iconClose.style.display = "none";
+      }
+
+      infoMode = !infoMode;
+    }
+
+    window.addEventListener("message", function (event) {
+      if (event.data && event.data.type === "akserver-back-to-announcement") {
+        const timestamp = Date.now();
+        frame.src = "https://akserverstorage.github.io/akserver_announcement/?ts=" + timestamp;
+        frame.style.height = "100px";
+        iconInfo.style.display = "inline-block";
+        iconClose.style.display = "none";
+        infoMode = false;
+      }
+    });
+  </script>  <script>
+    const uploadForm = document.getElementById('uploadForm');
+    const folderInput = document.getElementById('fileUploadInputFolder');
+    const fileInput = document.getElementById('fileUploadInputIndividual');
+    const messageDiv = document.getElementById('uploadMessage');
+
+    function performUpload(inputElement) {
+      if (inputElement.files.length === 0) return;
+
+      const spinner = document.getElementById('syncSpinner');
+      const messageText = document.getElementById('messageText');
+      spinner.style.display = 'block';
+      messageText.textContent = '';
+      messageDiv.style.color = '#007bff';
+
+      const formData = new FormData();
+      for (let i = 0; i < inputElement.files.length; i++) {
+        formData.append('files[]', inputElement.files[i]);
+      }
+      formData.append('upload_token', document.getElementById('uploadToken').value);
+
+      fetch('/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(response => {
+        if (!response.ok) {
+          return response.json().catch(() => {
+            throw new Error(`Server error: ${response.status} ${response.statusText}`);
+          });
+        }
+        return response.json();
+      })
+      .then(data => {
+        spinner.style.display = 'none';
+        if (data && data.success) {
+          messageText.textContent = data.message + (data.files ? ' Files: ' + data.files.join(', ') : '');
+          messageDiv.style.color = 'green';
+        } else {
+          messageText.textContent = data.message;
+          messageDiv.style.color = 'red';
+        }
+        uploadForm.reset();
+      })
+      .catch(error => {
+        spinner.style.display = 'none';
+        messageText.textContent = 'Sync failed or cancelled: ' + error.message;
+        messageDiv.style.color = 'red';
+        uploadForm.reset();
+      });
+    }
+
+    folderInput.addEventListener('change', () => performUpload(folderInput));
+    fileInput.addEventListener('change', () => performUpload(fileInput));
+  </script>
+  
+  <!-- akserver Analytics Tracker -->
+  <script>
+    window.addEventListener("load", () => {
+      const lastPingKey = "akserver_last_analytics_v2";
+      const now = Date.now();
+      const interval = 3 * 24 * 60 * 60 * 1000; // 3 days
+
+      const lastPing = parseInt(localStorage.getItem(lastPingKey), 10);
+      if (lastPing && now - lastPing < interval) return;
+
+      const deviceId = localStorage.getItem("akserver_device_id") || crypto.randomUUID();
+      localStorage.setItem("akserver_device_id", deviceId);
+
+      const today = new Date();
+      const firstSeen = localStorage.getItem("akserver_first_seen") || today.toISOString().split("T")[0];
+      localStorage.setItem("akserver_first_seen", firstSeen);
+
+      const lastSeen = today.toISOString().split("T")[0];
+      const activeDays = parseInt(localStorage.getItem("akserver_active_days") || "0", 10);
+      if (lastSeen !== localStorage.getItem("akserver_last_seen")) {
+        localStorage.setItem("akserver_active_days", (activeDays + 1).toString());
+        localStorage.setItem("akserver_last_seen", lastSeen);
+      }
+
+      const payload = {
+        device_id: deviceId,
+        first_seen: firstSeen,
+        last_seen: lastSeen,
+        active_days: parseInt(localStorage.getItem("akserver_active_days") || "1", 10),
+        install_age: Math.floor((Date.now() - new Date(firstSeen).getTime()) / (1000 * 60 * 60 * 24)),
+        trial_status: "web",
+        platform: navigator.platform,
+        architecture: navigator.userAgent.includes("x64") ? "64-bit" : "32-bit",
+        os_version: navigator.userAgent,
+        language: navigator.language,
+        screen: `${screen.width}x${screen.height}`,
+        version: "web-client",
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        utc_offset: -new Date().getTimezoneOffset() / 60
+      };
+
+      fetch("{ '/track' }", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      }).then(() => {
+        localStorage.setItem(lastPingKey, now.toString());
+      }).catch(console.warn);
+    });
+  </script>
+
+</body>
+</html>
