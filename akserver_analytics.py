@@ -44,8 +44,9 @@ analytics_logger = logging.getLogger(__name__)
 # --- Configuration for Persistent Device ID & First Seen ---
 # This file will store your unique device ID and the app's first run date.
 DEVICE_INFO_FILE = os.path.join(
-    os.path.expanduser("~"), ".your_app_info.json"
-)  # Changed to .json for multiple values
+    os.getenv("APPDATA", os.path.expanduser("~")),
+    "akserver_device_info.json"
+) # Changed to .json for multiple values
 
 
 def _get_persistent_device_info():

@@ -53,6 +53,7 @@ from akserver_route_handlers_file import handle_get_file, handle_post_download, 
 from akserver_route_handlers_thumbnails import handle_get_thumbnail, start_thumbnail_workers, generate_thumbnails_for_folder
 from akserver_ssl_util import generate_self_signed_cert, get_or_create_device_id , handle_sensitive_path_access
 from akserver_analytics import get_and_send_analytics_data
+from akserver_trial import check_trial
 
 # ------------------------------------------------------------------ Platform-specific imports
 
@@ -447,6 +448,17 @@ if __name__ == "__main__":
     load_config()
     PORT = int(CONFIG.get("port", PORT))
     akserver_SAVE_DIR = Path(CONFIG.get("save_dir") or DEFAULT_SAVE_DIR_SERVER)
+
+        # --- TRIAL CHECK ---
+    trial_status = check_trial()
+    if not trial_status["active"]:
+        server_logger.error(
+            "Trial expired or invalid! Days left: %d. Exiting...", trial_status["days_left"]
+        )
+        print(f"Trial expired or invalid! Days left: {trial_status['days_left']}")
+        sys.exit(1)
+    else:
+        server_logger.info("Trial active. Days left: %d", trial_status["days_left"])
 
     lock_file_path = APP_DATA_ROOT / "akserver.lock"
     lock_fd = None

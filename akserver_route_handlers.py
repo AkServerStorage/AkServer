@@ -43,6 +43,8 @@ import unicodedata
 
 from akserver_html import get_html
 from akserver_ssl_util import generate_download_token, get_or_create_device_id
+from akserver_trial import check_trial
+from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ Constants & Configuration
 
@@ -170,38 +172,49 @@ def _sanitize_relative_path(rel_path: str) -> str:
 
 # ------------------------------------------------------------------ General Utility Functions
 
-
-def handle_get_root(handler, message):
+@trial_required
+def handle_get_root(handler, message=""):
     """Handles GET requests for the root path ('/')."""
-
+    
+    # --- Authentication Check ---
     if handler.AUTH_ENABLED and not handler._is_authenticated():
         handler._redirect("/login")
         return
 
+    # --- Logout Link ---
     logout_link = (
         '<a href="/logout" class="logout-link">Logout</a>'
         if handler.AUTH_ENABLED
         else ""
     )
-    trial_message_html = " "
-    upload_token = generate_download_token("upload_access")
-    device_id = get_or_create_device_id()
-    cache_buster = int(time.time())
-    device_os = platform.system() + " " + platform.release()
 
-    html_content = get_html(
-        "akserver_html_upload.html",
-        logout_placeholder=logout_link,
-        message_placeholder=f"<div class='message'>{message}</div>" if message else "",
-        trial_message_placeholder=trial_message_html,
-        upload_token=upload_token,
-        device_id=device_id,
-        cache_buster=cache_buster,
-        os=device_os,
-        version="1.0.0",
+    # --- Optional: Trial info for active users ---
+    trial_status = check_trial()
+    trial_message_html = (
+        f"<div class='trial-info'>Trial active — Days left: {trial_status['days_left']}</div>"
+        if trial_status["active"]
+        else "<div class='trial-expired'>Trial expired! Please contact support.</div>"
     )
 
-    handler._send_response_data(html_content.encode("utf-8"))
+    # --- Upload Token & Device Info ---
+    context = {
+        "logout_placeholder": logout_link,
+        "message_placeholder": f"<div class='message'>{message}</div>" if message else "",
+        "trial_message_placeholder": trial_message_html,
+        "upload_token": generate_download_token("upload_access"),
+        "device_id": get_or_create_device_id(),
+        "cache_buster": int(time.time()),
+        "os": f"{platform.system()} {platform.release()}",
+        "version": "1.0.0",
+    }
+
+    # --- Render HTML ---
+    try:
+        html_content = get_html("akserver_html_upload.html", **context)
+        handler._send_response_data(html_content.encode("utf-8"))
+    except Exception as e:
+        handler.server_logger.error(f"Failed to render root HTML: {e}", exc_info=True)
+        handler.send_error(500, "Internal Server Error.")
 
 
 def format_file_size(bytes_count):

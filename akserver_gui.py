@@ -33,12 +33,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ------------------------------------------------------------------ Python Standard library
 
-import os
-import sys
-import threading
-import time
-import ctypes
-import webbrowser
+import os, sys, threading, time, ctypes, webbrowser, ssl, urllib.request
 import pystray
 import qrcode
 
@@ -46,7 +41,6 @@ import qrcode
 
 import tkinter as tk
 from tkinter import filedialog
-from ttkbootstrap import ttk, Window
 import tkinter.ttk as tk_ttk
 from PIL import Image, ImageTk
 from ttkbootstrap import ttk, Window
@@ -62,6 +56,7 @@ from akserver_gui_settings import handle_generate_otp_request, custom_yes_no_dia
 from akserver_gui_connected_devices import _fetch_devices_from_server_thread
 from akserver_gui_helper_functions import clear_frame
 from akserver_config import PORT, CONFIG, load_config, save_config, LOGGER as server_logger
+from akserver_trial import check_trial
 
 # ------------------------------------------------------------------ akserver Software info
 
@@ -116,10 +111,16 @@ def resource_path(relative_path):
 # ------------------------------------------------------------------ Main - UI
 
 def display_main_app_ui(app, parent_frame, root_window):
-    """Display the main application UI."""
-    
+    """Display the main application UI and update server + trial status."""
+
+    trial_status = check_trial()
+    if not trial_status["active"]:
+        app.parent_frame = parent_frame
+        app.show_trial_expired_overlay()
+        return
+
     clear_frame(parent_frame)
-    root_window.title("akserver Dashboard")
+    root_window.title("AkServer Dashboard")
 
     # --- Header Frame for Logo and Title ---
     header_frame = ttk.Frame(parent_frame)
@@ -128,24 +129,12 @@ def display_main_app_ui(app, parent_frame, root_window):
     try:
         logo_path = resource_path("akserver_logo.png")
         if os.path.exists(logo_path):
-            logo_pil = Image.open(logo_path)
-            desired_height = 45
-            aspect_ratio = logo_pil.width / logo_pil.height
-            desired_width = int(desired_height * aspect_ratio)
-            logo_pil_resized = logo_pil.resize(
-                (desired_width, desired_height), Image.Resampling.LANCZOS
-            )
-
-            app.logo_image_tk = ImageTk.PhotoImage(logo_pil_resized)
-
             logo_label_header = ttk.Label(header_frame, image=app.logo_image_tk)
             logo_label_header.pack(side=LEFT, padx=(0, 10))
     except Exception as e:
         server_logger.info(f"Error loading or placing logo in header: {e}")
 
-    ttk.Label(header_frame, text="akserver", font=("Helvetica", 18, "bold")).pack(
-        side=LEFT
-    )
+    ttk.Label(header_frame, text="AkServer", font=("Helvetica", 18, "bold")).pack(side=LEFT)
 
     # --- Tagline Block ---
     tagline_frame = ttk.Frame(parent_frame, padding=(12, 10), bootstyle="light")
@@ -153,7 +142,7 @@ def display_main_app_ui(app, parent_frame, root_window):
 
     ttk.Label(
         tagline_frame,
-        text="We empower you to establish your very own, completely private file storage system, operating entirely on your local network \n– Your Files, Your Network, Your Control.",  # noqa
+        text="We empower you to create your own private data storage system on your local network.\n\nYour Files. Your Network. Your Control.",
         font=("Helvetica", 10, "italic"),
         bootstyle=DARK,
         wraplength=500,
@@ -162,7 +151,7 @@ def display_main_app_ui(app, parent_frame, root_window):
 
     # --- Button Block ---
     button_block_frame = ttk.Frame(parent_frame, padding=(0, 10))
-    button_block_frame.pack(pady=(35, 10), fill=X, padx=20)
+    button_block_frame.pack(pady=(30, 10), fill=X, padx=20)
 
     # --- Create two columns within the block ---
     left_button_column = ttk.Frame(button_block_frame)
@@ -171,15 +160,13 @@ def display_main_app_ui(app, parent_frame, root_window):
     right_button_column = ttk.Frame(button_block_frame)
     right_button_column.pack(side=RIGHT, fill=BOTH, expand=True, padx=(5, 0))
 
-    # --- (left/right, top/bottom) internal padding ---
+    # --- Internal padding ---
     button_height_padding = (10, 12)
     button_common_width = 16  
 
     # --- Left Column Buttons ---
     app.server_button = ttk.Button(
         left_button_column,
-        text="Start Server",
-        bootstyle=app.BUTTON_COLORS["start"],
         width=button_common_width,
         padding=button_height_padding,
         command=lambda: (
@@ -189,10 +176,13 @@ def display_main_app_ui(app, parent_frame, root_window):
         ),
     )
     app.server_button.pack(pady=(0, 5), fill=X, expand=True)
+
+    # --- Update server button state according to running process ---
     if app.server_process and app.server_process.poll() is None:
-        update_server_ui_state(app, True)
+        update_server_ui_state(app, True)   # Online
     else:
-        update_server_ui_state(app, False)
+        update_server_ui_state(app, False)  # Offline
+
     ttk.Button(
         left_button_column,
         text="Linked Devices",
@@ -205,7 +195,7 @@ def display_main_app_ui(app, parent_frame, root_window):
     # --- Right Column Buttons ---
     ttk.Button(
         right_button_column,
-        text="Settings",
+        text="Connect",
         bootstyle=(INFO, OUTLINE),
         width=button_common_width,
         padding=button_height_padding,
@@ -219,6 +209,45 @@ def display_main_app_ui(app, parent_frame, root_window):
         padding=button_height_padding,
         command=lambda: webbrowser.open(FEEDBACK_URL),
     ).pack(pady=(5, 0), fill=X, expand=True)
+
+    # --- Update server + trial status slightly delayed ---
+    # Let the UI render first
+    app.root.after(50, lambda: update_main_status(app))
+
+
+def update_main_status(app):
+    """Update bottom status with server online/offline and trial info."""
+
+    # Server running check
+    running = app.server_process and app.server_process.poll() is None
+
+    # Trial check
+    trial_info = app.get_trial_status()  # returns {"active": bool, "days_left": int}
+    trial_active = trial_info.get("active", False)
+    days_left = trial_info.get("days_left", 0)
+
+    # Determine server text/color
+    if running:
+        server_text = "Server Online"
+        server_color = SUCCESS
+    else:
+        server_text = "Server Offline"
+        server_color = DANGER
+
+    # Determine trial text
+    if trial_active:
+        trial_text = f"Trial active — {days_left} days remaining"
+        if not running:
+            app.server_button.config(state="normal")  # allow starting server only if trial active
+    else:
+        trial_text = "Trial Expired — Upgrade required!"
+        if not running:
+            app.server_button.config(state="disabled")  # prevent starting if trial expired
+
+    combined_text = f"{server_text} | {trial_text}"
+    
+    combined_color = DANGER if not trial_active else server_color
+    app.set_bottom_status_message(combined_text, combined_color)
 
 # ------------------------------------------------------------------ Settings - UI
 
@@ -238,7 +267,7 @@ def display_settings_ui(app, parent_frame, root_window):
         top_frame,
         text="⬅",
         bootstyle="info",
-        command=lambda: display_main_app_ui(app, parent_frame, root_window)
+        command=lambda: app.root.after(50, lambda: display_main_app_ui(app, parent_frame, root_window))
     )
     back_button.pack(side=LEFT)
     add_bootstyle_hover(back_button, normal="info", hover="primary")
@@ -246,7 +275,7 @@ def display_settings_ui(app, parent_frame, root_window):
     # --- Instruction label centered ---
     instruction_label = ttk.Label(
         parent_frame,
-        text="Click 'Connect' to securely add a new device.",
+        text="Click 'Add Device' to securely add a new device.",
         font=("Segoe UI", 11, "italic"),
         foreground="#333333",
         wraplength=500,
@@ -260,11 +289,11 @@ def display_settings_ui(app, parent_frame, root_window):
         connect_button.pack_forget()
         qr_frame.pack(pady=(5, 0), fill=X, padx=15)
         otp_frame.pack(pady=5, fill=X, padx=15)
-        instruction_label.config(text="Click 'Gen Code' to get your OTP.")
+        instruction_label.config(text="Click 'Generate Code' to get your OTP.")
 
     connect_button = ttk.Button(
         parent_frame,
-        text="Connect",
+        text="Add Device",
         bootstyle="primary",
         command=show_qr_and_otp
     )
@@ -291,7 +320,7 @@ def display_settings_ui(app, parent_frame, root_window):
     app.otp_display_label_settings = ttk.Label(otp_frame, text="", font=("Helvetica", 12, "bold"))
     app.generate_otp_button_settings = ttk.Button(
         otp_frame,
-        text="Gen Code",
+        text="Generate Code",
         bootstyle="Primary",
         command=lambda: handle_generate_otp_request(app)
     )
@@ -435,216 +464,272 @@ def display_connected_devices_ui(app, parent_frame, root_window):
         daemon=True
     ).start()
 
-# ------------------------------------------------------------------ Application Class
+
+
+# ------------------------------------------------------------------ GUI Application Class
 
 class akserverGUI:
-            
     def __init__(self, start_in_tray=False):
         load_config()
-
         self.root = Window(themename="flatly")
-        self.root.title("akserver Control")
+        self.root.withdraw()
+        self.root.title("AkServer")
         self.root.geometry("600x450")
-        self.root.resizable(False, False)
 
-        # --- Instance variables for state and UI widgets ---
-        self.app_icon_tk_ref = None
-        self.logo_image_tk = None
+        # PROD TIP: Center main window
+        window_width, window_height = 600, 450
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = (screen_width - window_width) // 2
+        y = (screen_height - window_height) // 2
+        self.root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+        self.root.resizable(False, False)
+        
+
         self.server_button = None
         self.server_status_label = None
-        self.otp_display_label_settings = None
-        self.generate_otp_button_settings = None
-        self.trusted_devices_tree = None
-        self.active_sessions_tree = None
-        self.last_updated_time = None
-        self.ACTIVE_SESSION_RECENCY_THRESHOLD_SECONDS = 5 * 60
-        self.BUTTON_COLORS = {"start": SUCCESS, "stop": DANGER}
-        self.PORT = 8443
         self.server_process = None
+        self.app_icon_tk_ref = None
+        self.logo_image_tk = None
+        self.current_overlay = None
+        self.server_busy = False
 
-        self._set_app_icon()
+        self.BUTTON_COLORS = {"start": SUCCESS, "stop": DANGER}
+
+        self._show_splash_screen()
         self._setup_ui()
-
+        self.splash.destroy()
+        self.root.deiconify()
+        self._set_app_icon()
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
         if start_in_tray:
             self.root.withdraw()
             threading.Thread(target=self.create_tray_icon, daemon=True).start()
 
+    # ------------------------------------------------------------------ Splash
+    def _show_splash_screen(self):
+        self.splash = tk.Toplevel()
+        self.splash.overrideredirect(True)
+        self.splash.attributes("-topmost", True)
+        width, height = 350, 200
+        x = (self.root.winfo_screenwidth() - width) // 2
+        y = (self.root.winfo_screenheight() - height) // 2
+        self.splash.geometry(f"{width}x{height}+{x}+{y}")
 
-    def _set_app_icon(self):
+        frame = ttk.Frame(self.splash, padding=20)
+        frame.pack(expand=True, fill=BOTH)
+
         try:
-            icon_path_png = resource_path("akserver_icon.png")
-            icon_path_ico = resource_path("akserver_icon.ico")
-
-            icon_set = False
-            if sys.platform == "win32" and os.path.exists(icon_path_ico):
-                try:
-                    self.root.iconbitmap(icon_path_ico)
-                    icon_set = True
-                except Exception as e_ico:
-                    server_logger.info(
-                        f"Error setting .ico application icon: {e_ico}. Will try .png."
-                    )
-
-            if not icon_set and os.path.exists(icon_path_png):
-                try:
-                    app_icon_pil = Image.open(icon_path_png)
-                    if app_icon_pil.mode != "RGBA":
-                        app_icon_pil = app_icon_pil.convert("RGBA")
-                    self.app_icon_tk_ref = ImageTk.PhotoImage(app_icon_pil)
-                    self.root.iconphoto(True, self.app_icon_tk_ref)
-                    icon_set = True
-                except Exception as e_png:
-                    server_logger.info(f"Error setting .png application icon: {e_png}")
-
-            if not icon_set:
-                server_logger.info("Warning: Application icon file not found.")
+            logo_path = resource_path("akserver_logo.png")
+            logo_pil = Image.open(logo_path)
+            aspect_ratio = logo_pil.width / logo_pil.height
+            desired_height = 80
+            desired_width = int(desired_height * aspect_ratio)
+            self.splash_logo_tk = ImageTk.PhotoImage(
+                logo_pil.resize((desired_width, desired_height), Image.Resampling.LANCZOS)
+            )
+            ttk.Label(frame, image=self.splash_logo_tk).pack(pady=(0, 5))
         except Exception as e:
-            server_logger.info(f"General error during application icon setup: {e}")
+            server_logger.exception(f"Splash logo load failed: {e}")
 
+        ttk.Label(frame, text="AkServer", font=("Helvetica", 18, "bold")).pack(pady=(0, 5))
+        ttk.Label(frame, text="Your Private Storage Server", font=("Helvetica", 10, "italic")).pack()
+        self.splash.update()
 
+    # ------------------------------------------------------------------ UI Setup
     def _setup_ui(self):
-        content_frame = ttk.Frame(self.root, padding=20)
-        content_frame.pack(fill=BOTH, expand=True)
+        self._trial_banner_frame = ttk.Frame(self.root)
+        self._trial_banner_frame.pack(side="top", fill=X)
+
+        self.content_frame = ttk.Frame(self.root, padding=20)
+        self.content_frame.pack(fill=BOTH, expand=True)
 
         current_year = time.strftime("%Y")
-        copyright_label = ttk.Label(
+        ttk.Label(
             self.root,
             text=f"© {current_year} akserver. All rights reserved.",
             font=("Helvetica", 8),
             bootstyle=SECONDARY,
-            anchor="center",
-        )
-        copyright_label.pack(side=BOTTOM, fill=X)
+            anchor="center"
+        ).pack(side="bottom", fill=X)
 
         self.server_status_label = ttk.Label(
             self.root,
             text="Checking Server Status...",
             font=("Helvetica", 10),
-            bootstyle=WARNING,
+            bootstyle=INFO,
             relief=SUNKEN,
             anchor=W,
-            padding=5,
+            padding=5
         )
-        self.server_status_label.pack(side=BOTTOM, fill=X)
+        self.server_status_label.pack(side="bottom", fill=X)
 
-        display_main_app_ui(self, content_frame, self.root)
+        try:
+            logo_path = resource_path("akserver_logo.png")
+            logo_pil = Image.open(logo_path)
+            aspect_ratio = logo_pil.width / logo_pil.height
+            self.logo_image_tk = ImageTk.PhotoImage(
+                logo_pil.resize((int(45 * aspect_ratio), 45), Image.Resampling.LANCZOS)
+            )
+        except Exception as e:
+            server_logger.exception(f"Logo preload failed: {e}")
 
+        self.parent_frame = self.content_frame
+        display_main_app_ui(self, self.content_frame, self.root)
 
-    def set_bottom_status_message(self, text: str, bootstyle: str = INFO):
-        """
-        Update the permanent bottom status bar with given text and color style.
-        """
+        # Periodic server/trial checks
+        self.root.after(2000, self.periodic_status_check)
+
+    # ------------------------------------------------------------------ Trial
+    def get_trial_status(self):
+        return check_trial()
+
+    def _update_trial_ui(self):
+        trial_info = self.get_trial_status()
+        trial_active = trial_info.get("active", True)
+        days_left = trial_info.get("days_left", 0)
+        server_running = self.server_process and self.server_process.poll() is None
+
+        server_text = "Server Online" if server_running else "Server Offline"
+        trial_text = f"Trial active — {days_left} days remaining" if trial_active else "Trial Expired — Upgrade required!"
+        combined_text = f"{server_text} | {trial_text}"
+        combined_color = SUCCESS if server_running and trial_active else DANGER
+
         if self.server_status_label and self.server_status_label.winfo_exists():
-            self.server_status_label.config(text=text, bootstyle=bootstyle)
+            self.server_status_label.config(text=combined_text, bootstyle=combined_color)
+
+        if self.server_button and self.server_button.winfo_exists():
+            self.server_button.config(state="normal" if trial_active and not self.server_busy else "disabled")
+
+        if not trial_active:
+            self.show_trial_expired_overlay()
+
+    def show_trial_expired_overlay(self):
+        # Prevent duplicate rendering
+        if getattr(self, "current_overlay", None) and self.current_overlay.winfo_exists():
+            return  
+
+        # Clear out any existing content
+        for widget in self.content_frame.winfo_children():
+            widget.destroy()
+
+        # --- Style tweaks for clean look ---
+        style = ttk.Style()
+        style.configure("Card.TFrame", background="white")
+        style.configure("Card.TLabel", background="white", foreground="#333", font=("Helvetica", 11))
+        style.configure("CardBold.TLabel", background="white", foreground="#333", font=("Helvetica", 16, "bold"))
+
+        # --- Main card ---
+        card = ttk.Frame(self.content_frame, padding=30, style="Card.TFrame")
+        card.place(relx=0.5, rely=0.5, anchor="center")
+
+        # Logo
+        if self.logo_image_tk:
+            ttk.Label(card, image=self.logo_image_tk, style="Card.TLabel").pack(pady=(0, 15))
+
+        # Headline
+        ttk.Label(
+            card,
+            text="Your Trial Has Expired",
+            style="CardBold.TLabel"
+        ).pack(pady=(0, 10))
+
+        # Subtext
+        ttk.Label(
+            card,
+            text="Please upgrade to continue using AkServer.",
+            style="Card.TLabel",
+            wraplength=300,
+            justify="center"
+        ).pack(pady=(0, 20))
+
+        # Upgrade button
+        ttk.Button(
+            card,
+            text="Upgrade Now",
+            bootstyle="success",
+            command=lambda: webbrowser.open("https://akserverstorage.github.io/akserver-website")
+        ).pack(pady=(0, 10))
+
+        # Save reference
+        self.current_overlay = card
 
 
+    # ------------------------------------------------------------------ Periodic check
     def periodic_status_check(self):
-        """Safely checks server and updates UI."""
-        if not self.root.winfo_exists() or not (self.server_button and self.server_button.winfo_exists()):
+        if not self.root.winfo_exists():
             return
         try:
-            running = self.server_process and self.server_process.poll() is None
-            update_server_ui_state(self, running)
-        except Exception as e:
-            server_logger.error(f"Error in periodic_status_check: {e}")
+            self._update_trial_ui()
         finally:
-            self._status_check_id = self.root.after(2000, self.periodic_status_check)
+            self.root.after(5000, self.periodic_status_check)
 
+    # ------------------------------------------------------------------ Icon
+    def _set_app_icon(self):
+        try:
+            icon_path_ico = resource_path("akserver_icon.ico")
+            icon_path_png = resource_path("akserver_icon.png")
+            icon_set = False
 
-    def _start_background_tasks(self):
-        start_server_logic(self)
-        self.root.after(100, self.periodic_status_check)
+            if sys.platform == "win32" and os.path.exists(icon_path_ico):
+                try:
+                    self.root.iconbitmap(icon_path_ico)
+                    icon_set = True
+                except Exception as e:
+                    server_logger.exception(f"ICO icon error: {e}")
 
+            if not icon_set and os.path.exists(icon_path_png):
+                img = Image.open(icon_path_png)
+                if img.mode != "RGBA":
+                    img = img.convert("RGBA")
+                self.app_icon_tk_ref = ImageTk.PhotoImage(img)
+                self.root.iconphoto(True, self.app_icon_tk_ref)
 
-    def run(self):
-        self._start_background_tasks()
-        self.root.mainloop()
+        except Exception as e:
+            server_logger.exception(f"General icon setup error: {e}")
 
+    def set_bottom_status_message(self, message, style=None):
+        """Update the bottom server/trial status label safely."""
+        if self.server_status_label and self.server_status_label.winfo_exists():
+            bootstyle = style if style else "secondary"
+            self.server_status_label.config(text=message, bootstyle=bootstyle)
 
-    def update_status_message(self, text: str, bootstyle: str = INFO, duration: int = 3000):
-        """Show a temporary overlay message at top of root window."""
-        popup_label = tk.Label(
-            self.root,
-            text=text,
-            bg="#e0f7fa", fg="#004d40",
-            font=("Segoe UI", 8, "bold"),
-            padx=18, pady=8, bd=1, relief="groove"
-        )
-        popup_label.place(relx=0.5, rely=0.05, anchor="n")
-        popup_label.lift()
-        self.root.after(duration, popup_label.destroy)
-
-
+    # ------------------------------------------------------------------ Tray
     def create_tray_icon(self):
-        """Creates and runs the system tray icon."""
-
         def show_window(icon, item):
             self.root.after(0, self.root.deiconify)
             icon.stop()
 
         def quit_window(icon, item):
-            def shutdown_and_exit():
-                try:
-                    import ssl, urllib.request
-
-                    context = ssl._create_unverified_context()
-                    req = urllib.request.Request("https://127.0.0.1:8443/api/shutdown", method="POST")
-                    urllib.request.urlopen(req, context=context, timeout=5)
-                    server_logger.info("[Tray] Shutdown signal sent to server.")
-                except Exception as e:
-                    server_logger.info(f"[Tray] Shutdown failed or server not running: {e}")
-
-                time.sleep(1)  # Give server time to shut down
-
-                try:
-                    icon.stop()
-                except:
-                    pass
+            try:
+                context = ssl._create_unverified_context()
+                req = urllib.request.Request(f"https://127.0.0.1:{PORT}/api/shutdown", method="POST")
+                urllib.request.urlopen(req, context=context, timeout=5)
+            except Exception as e:
+                server_logger.exception(f"[Tray] Shutdown failed: {e}")
+            finally:
+                icon.stop()
                 self.root.after(0, self.root.destroy)
-
-            threading.Thread(target=shutdown_and_exit, daemon=True).start()
-
 
         icon_path_ico = resource_path("akserver_icon.ico")
         icon_path_png = resource_path("akserver_icon.png")
+        image = Image.open(icon_path_ico if os.path.exists(icon_path_ico) else icon_path_png)
+        menu = pystray.Menu(pystray.MenuItem("Show", show_window), pystray.MenuItem("Exit", quit_window))
+        pystray.Icon("akserver", image, "akserver", menu).run()
 
-        image = None
-        if sys.platform == "win32" and os.path.exists(icon_path_ico):
-            image = Image.open(icon_path_ico)
-        elif os.path.exists(icon_path_png):
-            image = Image.open(icon_path_png)
-
-        menu = pystray.Menu(
-            pystray.MenuItem("Show", show_window), pystray.MenuItem("Exit", quit_window)
-        )
-        tray_icon = pystray.Icon("akserver", image, "akserver", menu)
-        tray_icon.run()
-
-
-    def on_server_button_click(self):
-        try:
-            if self.server_button["text"] == "Start Server":
-                start_server_logic(self)
-            else:
-                stop_server_logic(self)
-        except Exception as e:
-            self.update_status_message(f"Server action failed: {e}", DANGER)
-
-
+    # ------------------------------------------------------------------ Window close
     def on_closing(self):
-        """Minimizes the window to the system tray safely."""
         self.root.withdraw()
         if not hasattr(self, "tray_thread") or not self.tray_thread.is_alive():
             self.tray_thread = threading.Thread(target=self.create_tray_icon, daemon=True)
             self.tray_thread.start()
 
-
-    def on_server_started(self, process):
-        """Updates the server process variable on the main thread and starts the status check."""
-        self.server_process = process
-        self.periodic_status_check()
+    # ------------------------------------------------------------------ Run
+    def run(self):
+        start_server_logic(self)
+        self.root.mainloop()
 
 # ------------------------------------------------------------------ Entry Point
 

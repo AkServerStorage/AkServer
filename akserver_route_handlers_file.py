@@ -53,9 +53,10 @@ from akserver_config import CONFIG
 from akserver_ssl_util import generate_download_token, verify_download_token, verify_upload_token
 from akserver_route_handlers_thumbnails import generate_thumbnail_for_video
 from akserver_route_handlers import generic_file_svg, _sanitize_relative_path, format_file_size
-
+from akserver_trial_status import trial_required
 # ------------------------------------------------------------------ File Browser
 
+@trial_required
 def handle_get_view_files(handler):
 
     def build_breadcrumb(path):
@@ -132,7 +133,7 @@ def handle_get_view_files(handler):
     if not folder_path.startswith(os.path.abspath(handler.SAVE_DIR)):
         handler._send_response_data(b"Invalid folder path", code=400)
         return
-
+    
     folder_items_html = ""
     file_items_html = ""
     message_content = ""
@@ -429,7 +430,7 @@ def handle_get_view_files(handler):
         handler._send_response_data(b"Internal Server Error", code=500)
 
 # ------------------------------------------------------------------ File Download & Streaming
-
+@trial_required
 def handle_get_file(handler):
 
     try:
@@ -785,6 +786,7 @@ def handle_post_upload(handler):
             500,
         )
 
+@trial_required
 def route_post_upload(handler):
     """
     Wrapper for POST /upload with robust error handling.
@@ -809,6 +811,7 @@ def route_post_upload(handler):
             500,
         )
 
+@trial_required
 def handle_post_download(handler):
     """Fast, secure streaming download handler."""
 

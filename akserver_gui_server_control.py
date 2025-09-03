@@ -1,37 +1,19 @@
+
 # =============================================================================
 # akserver - GUI Server Control Module (Proprietary Edition)
 # =============================================================================
 """
 File: akserver_gui_server_control.py
-Description: Contains the logic for managing the akserver backend process from the GUI.
+Description: Handles starting/stopping akserver from GUI safely.
 
-Author: AkshAy S (akserver Project)
-Version: 1.0.0
-License: akserver Custom Freemium License (See LICENSE.txt)
-
-This module handles core server control operations, including:
-- Starting the akserver process as a subprocess.
-- Stopping the server gracefully via an internal API call.
-- Checking the server's current operational status.
-- Updating the GUI's state (buttons, status labels) to reflect the server's status.
-- Providing a safe restart mechanism for the server.
-
-Third-party components used:
-- ttkbootstrap (MIT)
-- tkinter (BSD)
+Author: AkshAy S
+Version: 1.0.1
+License: akserver Custom Freemium License
 
 © 2025 akserver. All rights reserved.
-
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
-
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
-
-# ------------------------------------------------------------------  Python Standard Library Imports
-
+# ------------------------------------------------------------------ Imports
 import os
 import sys
 import ssl
@@ -39,69 +21,93 @@ import urllib.request
 import threading
 import subprocess
 import time
-
-# ------------------------------------------------------------------ Third-Party Imports
-
 from tkinter import messagebox
 from ttkbootstrap.constants import WARNING, INFO, SUCCESS, DANGER
 
-# ------------------------------------------------------------------ Local Modules
+from akserver_config import CONFIG, LOGGER as server_logger, PORT
 
-from akserver_config import CONFIG, LOGGER as server_logger
+# ------------------------------------------------------------------ Helpers
+def _get_trial_status(app):
+    """Return trial info dict: {'active': bool, 'days_left': int}"""
+    return getattr(app, "get_trial_status", lambda: {"active": True, "days_left": 0})()
+
+def _set_server_button_state(app, enabled=True):
+    """Safely update server button state based on trial and busy status"""
+    if getattr(app, "server_button", None) and app.server_button.winfo_exists():
+        trial_active = _get_trial_status(app).get("active", True)
+        state = "normal" if enabled and trial_active else "disabled"
+        app.root.after(0, lambda: app.server_button.config(state=state))
+
+def _report_error(app, message):
+    """Centralized error reporting"""
+    server_logger.error(f"[ERROR] {message}")
+    if getattr(app, "root", None):
+        app.root.after(0, lambda: update_server_ui_state(app, False, message, DANGER))
+        app.root.after(0, lambda: messagebox.showerror("Error", message))
 
 # ------------------------------------------------------------------ Server Status Check
-
 def check_server_status_api():
-    """Returns True if server responds to /api/status."""
+    """Return True if server responds to /api/status."""
     try:
         context = ssl._create_unverified_context()
         port = CONFIG["port"]
-        with urllib.request.urlopen(f"https://127.0.0.1:{port}/api/status", context=context, timeout=2) as response:
-            return response.status == 200
+        with urllib.request.urlopen(f"https://127.0.0.1:{port}/api/status", context=context, timeout=2) as resp:
+            return resp.status == 200
     except Exception:
         return False
 
-# ------------------------------------------------------------------ Server Control (Start/Stop)
-
-def start_server_logic(app):
-    update_server_ui_state(app, False, status_text="Starting Server...", status_color=INFO)
-    threading.Thread(target=_start_server_thread_logic, args=(app,), daemon=True).start()
-
-def stop_server_logic(app):
-    update_server_ui_state(app, True, status_text="Stopping Server...", status_color=WARNING)
-    threading.Thread(target=_stop_server_thread_logic, args=(app,), daemon=True).start()
-
 # ------------------------------------------------------------------ UI Updates
-
 def update_server_ui_state(app, is_running, status_text=None, status_color=None):
-    """Update buttons and status label safely."""
-    if getattr(app, "server_button", None) and app.server_button.winfo_exists():
-        try:
+    """Update server label and button safely"""
+    try:
+        trial_info = _get_trial_status(app)
+        trial_active = trial_info.get("active", True)
+        days_left = trial_info.get("days_left", 0)
+
+        # --- Status label ---
+        if getattr(app, "server_status_label", None) and app.server_status_label.winfo_exists():
+            default_text = "Server Online" if is_running else "Server Offline"
+            default_color = SUCCESS if is_running else DANGER
+            trial_text = f"Trial active — {days_left} days remaining" if trial_active else "Trial Expired — Upgrade required!"
+            combined_text = f"{status_text or default_text} | {trial_text}"
+            combined_color = DANGER if not trial_active else (status_color or default_color)
+            app.server_status_label.config(text=combined_text, bootstyle=combined_color)
+
+        # --- Server button ---
+        if getattr(app, "server_button", None) and app.server_button.winfo_exists():
             app.server_button.config(
                 text="Stop Server" if is_running else "Start Server",
                 bootstyle=app.BUTTON_COLORS["stop" if is_running else "start"]
             )
-        except Exception:
-            pass
+            busy = getattr(app, "server_busy", False)
+            _set_server_button_state(app, enabled=not busy)
 
-    if getattr(app, "server_status_label", None) and app.server_status_label.winfo_exists():
-        default_text, default_color = ("Server Online", SUCCESS) if is_running else ("Server Offline", DANGER)
-        try:
-            app.server_status_label.config(
-                text=status_text or default_text,
-                bootstyle=status_color if status_color is not None else default_color
-            )
-        except Exception:
-            pass
+    except Exception as e:
+        print(f"update_server_ui_state error: {e}")
+
+# ------------------------------------------------------------------ Server Control
+def start_server_logic(app):
+    if getattr(app, "server_busy", False):
+        return
+    app.server_busy = True
+    _set_server_button_state(app, enabled=False)
+    update_server_ui_state(app, False, "Starting Server...", WARNING)
+    threading.Thread(target=_start_server_thread_logic, args=(app,), daemon=True).start()
+
+def stop_server_logic(app):
+    if getattr(app, "server_busy", False):
+        return
+    app.server_busy = True
+    _set_server_button_state(app, enabled=False)
+    update_server_ui_state(app, True, "Stopping Server...", WARNING)
+    threading.Thread(target=_stop_server_thread_logic, args=(app,), daemon=True).start()
+
 
 # ------------------------------------------------------------------ Internal Thread Logic
-
 def _start_server_thread_logic(app):
-    """Thread to start server safely."""
+    """Start server in background thread."""
     try:
         from akserver_gui import APPLICATION_PATH, SERVER_SCRIPT_NAME
-
-        server_logger.info("[DEBUG] Server start thread entered.")
 
         # Determine command
         if getattr(sys, "frozen", False):
@@ -121,7 +127,6 @@ def _start_server_thread_logic(app):
         env["akserver_SAVE_DIR"] = CONFIG["save_dir"]
         env["akserver_AUTH_ENABLED"] = "true"
 
-        # Launch server
         process = subprocess.Popen(
             cmd,
             env=env,
@@ -130,41 +135,53 @@ def _start_server_thread_logic(app):
             creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0
         )
 
-        app.root.after(0, lambda: setattr(app, "server_process", process))
-        app.root.after(0, lambda: update_server_ui_state(app, True, status_text="Server Started", status_color=SUCCESS))
+        app.server_process = process
+        time.sleep(1)  # Could replace with polling for readiness
+        running = process.poll() is None
+        app.root.after(0, lambda: update_server_ui_state(
+            app,
+            running,
+            "Server Started" if running else "Failed to start",
+            SUCCESS if running else DANGER
+        ))
 
     except Exception as e:
-        _report_error(app, f"Failed to start server: {str(e)}")
+        _report_error(app, f"Failed to start server: {e}")
+    finally:
+        app.server_busy = False
+        _set_server_button_state(app, enabled=True)
 
 def _stop_server_thread_logic(app):
-    """Thread to stop server safely via API."""
+    """Stop server in background thread."""
     try:
-        port = CONFIG["port"]
-        context = ssl._create_unverified_context()
-        req = urllib.request.Request(f"https://127.0.0.1:{port}/api/shutdown", method="POST")
-        with urllib.request.urlopen(req, context=context, timeout=5):
-            app.root.after(0, lambda: update_server_ui_state(app, False, status_text="Server Stopped", status_color=DANGER))
+        if getattr(app, "server_process", None):
+            context = ssl._create_unverified_context()
+            req = urllib.request.Request(f"https://127.0.0.1:{PORT}/api/shutdown", method="POST")
+            urllib.request.urlopen(req, context=context, timeout=5)
+
+        app.root.after(0, lambda: update_server_ui_state(app, False, "Server stopped successfully.", SUCCESS))
+
+    except urllib.error.URLError:
+        app.root.after(0, lambda: update_server_ui_state(app, False, "Server is already stopped.", INFO))
     except Exception as e:
-        _report_error(app, f"Failed to stop server: {str(e)}")
+        app.root.after(0, lambda e=e: update_server_ui_state(app, False, f"Unexpected error: {e}", DANGER))
+    finally:
+        app.server_busy = False
+        app.server_process = None
+        _set_server_button_state(app, enabled=True)
 
-# ------------------------------------------------------------------ Restart GUI Safely
-
+# ------------------------------------------------------------------ Restart GUI
 def restart_server_logic(app):
-    """Restart the GUI in a safe thread."""
+    """Restart the GUI safely."""
     def _restart():
         try:
             if getattr(app, "server_process", None) and app.server_process.poll() is None:
                 stop_server_logic(app)
-                time.sleep(1)
+                while getattr(app, "server_busy", False):
+                    time.sleep(0.1)
             python = sys.executable
             os.execl(python, python, *sys.argv)
         except Exception as e:
             _report_error(app, f"Restart failed: {e}")
+
     threading.Thread(target=_restart, daemon=True).start()
-
-# ------------------------------------------------------------------ Error Helper
-
-def _report_error(app, message):
-    server_logger.error(f"[ERROR] {message}")
-    app.root.after(0, lambda: update_server_ui_state(app, False, status_text=message, status_color=DANGER))
-    app.root.after(0, lambda: messagebox.showerror("Error", message))

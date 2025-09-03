@@ -41,7 +41,7 @@ if TYPE_CHECKING:
 
 # ---------------------------------------------------- Auth variables
  
-OTP_VALIDITY_DURATION = 300
+OTP_VALIDITY_DURATION = 1000
 SESSION_VALIDITY_DURATION = 3600
 DEVICE_TOKEN_COOKIE_NAME = "akserver_device_token"
 DEVICE_TOKEN_VALIDITY_SECONDS = 30 * 24 * 60 * 60

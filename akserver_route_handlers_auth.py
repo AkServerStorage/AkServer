@@ -37,10 +37,10 @@ from urllib.parse import parse_qs, quote, unquote, urlparse
 from akserver_config import LOGGER as server_logger
 from akserver_auth import DEVICE_TOKEN_COOKIE_NAME
 from akserver_html import get_html
-
+from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ Login function
-
+@trial_required
 def handle_get_login_page(handler, message):
     """Handles GET requests for the /login path."""
 
@@ -60,9 +60,10 @@ def handle_get_login_page(handler, message):
     else:
         handler._redirect("/")
 
-
+@trial_required
 def handle_post_login(handler):
     """Handles POST requests for the /login path."""
+
     if not handler.AUTH_ENABLED:
         handler._redirect("/")
         return
@@ -99,6 +100,7 @@ def handle_post_login(handler):
 
 def handle_get_logout(handler, message=None):
     """Handles GET requests for the /logout path."""
+
     try:
         if handler.AUTH_ENABLED:
             if not getattr(handler, "auth_manager_instance", None):
@@ -136,7 +138,7 @@ def handle_get_logout(handler, message=None):
         handler.send_error(500, f"Unhandled error in logout: {e}")
 
 # ------------------------------------------------------------------ OTP function
-
+@trial_required
 def handle_get_request_otp(handler): # handle request otp
     """Handles GET requests for the /request_otp path."""
 
@@ -174,8 +176,10 @@ def handle_get_request_otp(handler): # handle request otp
 
 # ------------------------------------------------------------------ Device function
 
+@trial_required
 def handle_post_submit_device_name(handler):
     """Handles POST requests for /submit_device_name."""
+
     if not handler.AUTH_ENABLED:
         handler._redirect("/")
         return
@@ -217,7 +221,6 @@ def handle_post_submit_device_name(handler):
 def handle_get_register_device_name(handler, message: str | None = None) -> None:
     """Handles GET requests for /register_device_name."""
     
-
     # === Auth Enabled Check ===
     if not handler.AUTH_ENABLED:
         handler._redirect("/")

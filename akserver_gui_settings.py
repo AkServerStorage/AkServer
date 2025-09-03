@@ -40,7 +40,7 @@ import time
 from tkinter import messagebox
 from PIL import Image, ImageTk
 import qrcode
-
+import tkinter as tk
 # ------------------------------------------------------------------ Third-Party Imports
 
 from ttkbootstrap.constants import WARNING, INFO
@@ -80,9 +80,13 @@ def handle_generate_otp_request(app):
     if getattr(app, "generate_otp_button_settings", None):
         app.generate_otp_button_settings.pack_forget()
     if getattr(app, "otp_display_label_settings", None):
-        app.otp_display_label_settings.config(text="Requesting OTP...", bootstyle=WARNING)
-        app.otp_display_label_settings.pack(pady=(5, 0))
+        try:
+            app.otp_display_label_settings.config(text="Requesting OTP...", bootstyle=WARNING)
+            app.otp_display_label_settings.pack(pady=(5, 0))
+        except tk.TclError:
+            pass  # label might have been destroyed
     threading.Thread(target=lambda: request_otp(app), daemon=True).start()
+
 
 def request_otp(app):
     """Fetch OTP from server with retries."""
@@ -106,21 +110,50 @@ def request_otp(app):
                     time.sleep(0.5)
                 else:
                     raise
+        # fallback error
         app.root.after(0, lambda: messagebox.showerror("Server Offline", "Cannot request OTP, server unreachable."))
         app.root.after(0, lambda: clear_settings_otp_display(app))
     except Exception as e:
-        _handle_api_error(e, getattr(app, "otp_display_label_settings", None), app.root,
-                          "Failed to request OTP", lambda: clear_settings_otp_display(app))
+        _handle_api_error(
+            e,
+            getattr(app, "otp_display_label_settings", None),
+            app.root,
+            "Failed to request OTP",
+            lambda: clear_settings_otp_display(app)
+        )
+
 
 def clear_settings_otp_display(app):
-    if getattr(app, "otp_display_label_settings", None):
-        app.otp_display_label_settings.config(text="")
-        app.otp_display_label_settings.pack_forget()
-    if getattr(app, "generate_otp_button_settings", None):
-        app.generate_otp_button_settings.pack()
+    """Safely hide OTP and restore button."""
+    label = getattr(app, "otp_display_label_settings", None)
+    if label and label.winfo_exists():
+        try:
+            label.config(text="")
+            label.pack_forget()
+        except tk.TclError:
+            pass
+    btn = getattr(app, "generate_otp_button_settings", None)
+    if btn and btn.winfo_exists():
+        btn.pack()
+
 
 def update_settings_otp_display(app, otp_value):
-    app.otp_display_label_settings.config(text=f"OTP: {otp_value}", bootstyle=INFO)
-    app.otp_display_label_settings.pack(pady=(5, 0))
-    # Auto-clear OTP after 10 sec
-    app.root.after(10000, lambda: clear_settings_otp_display(app))
+    """Display OTP and auto-clear after 10 seconds safely."""
+    label = getattr(app, "otp_display_label_settings", None)
+    if label and label.winfo_exists():
+        try:
+            label.config(text=f"OTP: {otp_value}", bootstyle=INFO)
+            label.pack(pady=(5, 0))
+        except tk.TclError:
+            return
+
+    # Cancel any previous timer
+    if hasattr(app, "_otp_clear_id") and app._otp_clear_id:
+        try:
+            app.root.after_cancel(app._otp_clear_id)
+        except Exception:
+            pass
+
+    # Schedule auto-clear
+    app._otp_clear_id = app.root.after(10000, lambda: clear_settings_otp_display(app))
+
