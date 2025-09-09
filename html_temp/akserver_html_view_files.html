@@ -1,0 +1,809 @@
+<!--
+=============================================================================
+AkServer – Proprietary Web Module
+=============================================================================
+
+Description:    File View interface for AkServer – file management.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
+
+Copyright © 2025 AkServer. All rights reserved.
+
+This software is proprietary and confidential.
+Redistribution, modification, or reverse engineering is strictly prohibited
+unless permitted by a commercial license agreement.
+
+For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.css">
+  <title>akserver – My Drive</title>
+    <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { -webkit-tap-highlight-color: transparent; outline: none; box-shadow: none; }
+
+    html, body {
+      font-family: "Segoe UI", sans-serif;
+      background-color: #f5f7fa;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    button, .floating-icon-btn {
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+    }
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      height: 56px;
+      background: #ffffff;
+      border-bottom: 1px solid #ddd;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+    }
+    .logo-title {
+      position: relative;
+      padding-left: 70px;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo-hover {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      transition: transform 0.2s ease, opacity 0.2s ease;
+    }
+    .logo-hover:hover {
+      transform: scale(1.04);
+      opacity: 0.95;
+    }
+    .logo-hover:hover .logo-img {
+      transform: rotate(-2deg) scale(1.05);
+      transition: transform 0.2s ease;
+    }
+    .logo-hover:hover .title-text {
+      color: #0056b3;
+      transition: color 0.2s ease;
+    }
+
+    .logo-img {
+      height: 32px;
+      margin-right: 10px;
+    }
+
+    .title-text {
+      font-size: 1.1rem;
+      font-weight: 500;
+      color: #000;
+      font-family: 'Segoe UI Semibold', 'Helvetica Neue', sans-serif;
+    }
+    .topbar-buttons {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon-btn {
+      font-size: 1.5rem;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #333;
+      transition: all 0.2s ease-in-out;
+    }
+    .icon-btn:hover {
+      background-color: rgba(0, 123, 255, 0.08);
+      border-radius: 50%;
+    }
+    .floating-icon-btn {
+      position: fixed;
+      top: 8px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: none;
+      border: none;
+      box-shadow: none;
+      color: #000;
+      cursor: pointer;
+      font-size: 18px;
+      z-index: 9999;
+      outline: none;
+    }
+
+    .floating-icon-btn:hover {
+      background-color: rgba(255, 255, 255, 0.25);
+      transform: scale(1.05);
+    }
+    .floating-icon-btn svg {
+      stroke: currentColor;
+      width: 24px;
+      height: 24px;
+    }
+
+    .floating-icon-btn.back-btn {left: 10px;}
+    .floating-icon-btn.sort-btn { right: 65px; }
+    .floating-icon-btn.toggle-btn { right: 10px; }
+    
+    .gallery-wrapper {
+      flex: 1;
+      overflow-y: auto;
+      padding: 15px;
+      padding-bottom: 200px;
+    }
+
+    .file-lists-wrapper {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .file-list {
+      display: grid;
+      gap: 6px;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    body.view-compact .file-list {
+      grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    }
+    body.view-detailed .file-list {
+      grid-template-columns: 1fr;
+    }
+
+    .file-item, .folder-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: stretch;
+      background: #fff;
+      border-radius: 6px;
+      border: 1px solid #e2e6ee;
+      overflow: hidden;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      position: relative;
+    }
+
+    .file-item:hover, .folder-item:hover {
+      box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+      transform: scale(1.01);
+    }
+
+    .media-container {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .media-container a {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+    }
+
+    .media-container img,
+    .media-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+    
+
+    .media-container svg {
+      width: 70%;
+      height: auto;
+      max-height: 70%;
+      object-fit: contain;
+      display: block;
+      margin: auto;
+    }
+
+    .label-below {
+      position: absolute;
+      bottom: 6px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      color: #333;
+      padding: 0 6px;
+      height: 2.4em;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+      white-space: normal;
+    }
+
+    .file-info { display: none; }
+
+    body.view-detailed .file-item,
+    body.view-detailed .folder-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 12px;
+      padding: 8px 12px;
+      aspect-ratio: auto;
+    }
+
+    body.view-detailed .media-container {
+      width: 44px;
+      height: 44px;
+      flex-shrink: 0;
+    }
+
+    body.view-detailed .file-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      max-width: 80%;
+      overflow: hidden;
+    }
+
+    body.view-detailed .file-name {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #222;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    body.view-detailed .file-meta {
+      font-size: 0.7rem;
+      color: #666;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    body.view-detailed .folder-item .label-below {
+      display: none !important;
+    }
+
+    body.view-detailed .folder-item .file-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+      max-width: 80%;
+      overflow: hidden;
+    }
+    .footer {
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
+      padding: 12px;
+    }
+    .video-modal {
+      position: fixed;
+      z-index: 9999;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .video-content {
+      position: relative;
+      background: black;
+      padding: 10px;
+      border-radius: 10px;
+      max-width: 90vw;
+      max-height: 90vh;
+    }
+
+    .video-content video {
+      width: 100%;
+      height: auto;
+    }
+
+    .video-close {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 28px;
+      color: white;
+      background: none;
+      border: none;
+      cursor: pointer;
+    }
+    #filterMenu {
+      display: none;
+      position: fixed;
+      top: 64px; 
+      right: 65px;
+      z-index: 9999;
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(12px);  
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      padding: 4px 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      animation: fadeIn 0.2s ease;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #filterMenu button {
+      display: block;
+      width: 100%;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      background: none;
+      border: none;
+      text-align: left;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+
+    #filterMenu button:hover {
+      background-color: rgba(0, 123, 255, 0.08);
+      color: #0056b3;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-5px); }
+      to   { opacity: 1; transform: translateY(0); }
+    } 
+    #filterMenu {
+      background: rgba(255, 255, 255, 0.85);  
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+      padding: 4px 0;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      animation: fadeIn 0.2s ease;
+      display: none;
+      flex-direction: column;
+    }
+    .filter-dot {
+      display: inline-block; 
+      width: 6px;
+      height: 6px;
+      background-color: transparent;  
+      border-radius: 50%;
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+
+    button.active .filter-dot {
+      background-color: #007bff;    
+    }
+
+    .compact-icon .file-name {
+      font-size: 0.75rem;
+      line-height: 1.2;
+      padding: 2px 6px;
+      word-wrap: break-word;
+      white-space: normal;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-height: 2.4em;
+    }
+    body.view-compact .compact-icon .media-container {
+      align-items: flex-start;
+      justify-content: flex-start;
+      padding-bottom: 30px;
+      width: 100%;
+      height: 100%;
+    }
+
+    body.view-compact .compact-icon .media-container svg,
+    body.view-compact .compact-icon .media-container img {
+      width: 28px;
+      height: 28px;
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .play-icon-overlay {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      background-color: rgba(0, 0, 0, 0.4);
+      border-radius: 50%;
+      width: 5px;
+      height: 5px;
+      padding: 2px;
+      z-index: 2;
+    }
+    .video-thumb-image {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #111; 
+      position: relative;
+      overflow: hidden;
+      border-radius: 6px;
+    }
+    .download-overlay-flat {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      z-index: 1;
+    }
+
+    .download-text-btn-flat {
+      width: 100%;
+      height: 18px;
+      padding: 0;
+      margin: 0;
+      border: none;
+      border-top: 1px solid #007bff30;
+      background: rgba(0, 123, 255, 0.18);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+      transition: background 0.2s ease;
+    }
+
+    .download-text-btn-flat svg {
+      width: 16px;
+      height: 16px;
+      fill: #0056b3;
+    }
+
+    .download-text-btn-flat:hover {
+      background-color: rgba(0, 123, 255, 0.12);
+      transform: scale(1.05);
+    }
+    body.view-detailed .download-text-btn-flat {
+      background: rgba(0, 123, 255, 0.08);
+      border-radius: 6px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease;
+      border: none;
+      width: 32px;
+      height: 32px;
+      cursor: pointer;
+    }
+
+    body.view-detailed .download-text-btn-flat svg {
+      width: 18px;
+      height: 18px;
+      fill: #0056b3;
+    }
+
+    body.view-detailed .download-text-btn-flat:hover {
+      background-color: rgba(0, 123, 255, 0.15);
+      transform: scale(1.05);
+    }
+    body.view-detailed .download-overlay-flat {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 6px;
+      height: 100%;
+    }
+    body.view-compact .compact-icon .label-below {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: normal;
+      height: 2.4em;
+      padding: 0 6px;
+      font-size: 0.82rem;
+      line-height: 1.2;
+      color: #333;
+      text-align: center;
+      margin-top: 4px;
+      word-break: break-word;
+      word-wrap: break-word;
+      bottom: 18px;
+    }
+    body.view-detailed .label-below {
+      display: none !important;
+    }
+    
+    .breadcrumb-bar {
+      font-size: 0.85rem;
+      color: #333;
+      padding: 10px 16px 6px;
+      overflow-x: auto;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      flex-wrap: nowrap;
+      gap: 4px;
+      animation: fadeSlideDown 0.3s ease;
+    }
+
+    .breadcrumb-bar a {
+      color: #333;
+      text-decoration: none;
+      font-weight: 500;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+
+    .breadcrumb-bar a:hover {
+      text-decoration: underline;
+      color: #0056b3;
+    }
+
+    .breadcrumb-bar .separator {
+      color: #999;
+      margin: 0 2px;
+      font-size: 1rem;
+      animation: bounceIn 0.2s ease;
+    }
+
+    @keyframes fadeSlideDown {
+      0% { opacity: 0; transform: translateY(-6px); }
+      100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes bounceIn {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    
+  </style>
+</head>
+<body class="view-compact">
+  <div class="container">
+    <div class="topbar">
+      <div class="logo-title">
+        <a href="/" class="logo-hover">
+          <img src="/static/akserver_logo.png" class="logo-img" />
+          <div class="title-text">My Drive</div>
+        </a>
+      </div>
+    </div>
+    {{back_button_placeholder}}
+    {{sort_button_placeholder}}       
+    {{toggle_view_button_placeholder}}
+  
+    
+    {{build_breadcrumb_placeholder}}
+  
+    <div id="filterMenu" class="sort-menu">
+      <button data-filter="all" onclick="applyFilter('all')"><span class="filter-dot"></span> All Files</button>
+      <button data-filter="images" onclick="applyFilter('images')"><span class="filter-dot"></span> Images</button>
+      <button data-filter="videos" onclick="applyFilter('videos')"><span class="filter-dot"></span> Videos</button>
+      <button data-filter="docs" onclick="applyFilter('docs')"><span class="filter-dot"></span> Documents</button>
+      <button data-filter="audio" onclick="applyFilter('audio')"><span class="filter-dot"></span> Audio</button>
+      <button data-filter="archives" onclick="applyFilter('archives')"><span class="filter-dot"></span> Archives</button>
+      <button data-filter="others" onclick="applyFilter('others')"><span class="filter-dot"></span> Others</button>
+    </div>
+    <script>
+      function toggleFilterMenu() {
+        const menu = document.getElementById('filterMenu');
+        menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+      }
+
+      function applyFilter(type) {
+        const url = new URL(window.location.href);
+        url.searchParams.set("filter", type);
+        document.getElementById("filterMenu").style.display = 'none';
+        window.location.href = url.toString();
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const activeFilter = urlParams.get("filter") || "all";
+
+        const buttons = document.querySelectorAll("#filterMenu button");
+        buttons.forEach(btn => {
+          const btnType = btn.getAttribute("data-filter");
+          if (btnType === activeFilter) {
+            btn.classList.add("active");
+          } else {
+            btn.classList.remove("active");
+          }
+        });
+      });
+    </script>
+    
+    <div class="gallery-wrapper">
+      {{message_placeholder}}
+      <div class="file-lists-wrapper">
+        <ul class="file-list folders-only">{{folder_items}}</ul>
+        <ul class="file-list files-only" id="pswp-gallery">{{file_items}}</ul>
+      </div>
+    </div>
+
+    <div class="footer">© 2025 akserver. All rights reserved.</div>
+  </div>
+  <script>
+    function toggleFilterMenu() {
+      const menu = document.getElementById('filterMenu');
+      menu.style.display = (menu.style.display === 'flex') ? 'none' : 'flex';
+    }
+  </script>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const breadcrumbBar = document.querySelector('.breadcrumb-bar');
+      if (breadcrumbBar) {
+        breadcrumbBar.scrollLeft = breadcrumbBar.scrollWidth;
+      }
+    });
+  </script>
+
+  <script>
+    document.addEventListener("click", function(event) {
+      const menu = document.getElementById("filterMenu");
+      const btn = document.querySelector(".sort-btn");
+      if (!menu.contains(event.target) && !btn.contains(event.target)) {
+        menu.style.display = "none";
+      }
+    });
+  </script>
+  <script>
+    const gridClasses = ["view-compact", "view-detailed"];
+
+    function toggleView() {
+      const body = document.body;
+
+      let currentIndex = gridClasses.findIndex(cls => body.classList.contains(cls));
+      if (currentIndex === -1) {
+        currentIndex = 0;
+      }
+
+      const nextIndex = (currentIndex + 1) % gridClasses.length;
+
+      gridClasses.forEach(cls => body.classList.remove(cls));
+      body.classList.add(gridClasses[nextIndex]);
+    }
+  </script>
+  
+  <script>
+    function openVideoModal(filePath, token) {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      const source = document.getElementById("videoSource");
+
+      if (!modal || !video || !source) return;
+
+      const encodedPath = encodeURIComponent(filePath);
+      const url = `/get_file?path=${encodedPath}&token=${token}`;
+
+      source.src = url;
+      video.load();
+      video.play().catch((e) => {
+        console.warn("Autoplay may be blocked", e);
+      });
+
+      modal.style.display = "flex";
+    }
+  </script>
+  <script>
+    function closeVideoModal() {
+      const modal = document.getElementById("videoModal");
+      const video = document.getElementById("modalVideo");
+      if (video) {
+        video.pause();
+        video.currentTime = 0;
+      }
+      if (modal) modal.style.display = "none";
+    }
+
+    function handleModalClick(event) {
+      const inner = document.getElementById("videoModalInner");
+      if (!inner.contains(event.target)) {
+        closeVideoModal();
+      }
+    }
+  </script>
+  
+  <script type="module">
+    import PhotoSwipeLightbox from 'https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe-lightbox.esm.js';
+
+    const lightbox = new PhotoSwipeLightbox({
+      gallery: '#pswp-gallery',
+      children: 'a[href]:not([onclick])',
+      pswpModule: () => import('https://cdn.jsdelivr.net/npm/photoswipe@5.4.4/dist/photoswipe.esm.js'),
+      bgOpacity: 0.85,
+      showHideAnimationType: 'zoom',
+      escKey: true,
+      tapAction: 'close',
+      clickToCloseNonZoomable: true,
+      closeOnVerticalDrag: true,
+    });
+
+    lightbox.init();
+  </script>
+    
+  <div id="videoModal" onclick="handleModalClick(event)" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:9999; align-items:center; justify-content:center;">
+    <div id="videoModalInner" style="position:relative; width:90%; max-width:720px;">
+      <video id="modalVideo" controls autoplay style="width:100%; max-height:90vh;">
+        <source id="videoSource" src="" type="video/mp4" />
+        Your browser does not support HTML5 video.
+      </video>
+      <button onclick="closeVideoModal()" style="position:absolute; top:10px; right:10px; font-size:24px; background:none; color:white; border:none;">×</button>
+    </div>
+  </div>
+  <script>
+    document.addEventListener("contextmenu", function (e){
+      e.preventDefault();
+    });
+  </script>
+  <script>
+    setInterval(() => {
+      const url = new URL(window.location.href);
+      const currentScroll = window.scrollY;
+
+      fetch(url)
+        .then(response => response.text())
+        .then(html => {
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+
+          const newFileList = tempDiv.querySelector('.file-lists-wrapper');
+          const existingFileList = document.querySelector('.file-lists-wrapper');
+
+          if (newFileList && existingFileList) {
+            existingFileList.innerHTML = newFileList.innerHTML;
+            console.log(" File list auto-refreshed for fresh tokens");
+          }
+
+          window.scrollTo({top: currentScroll});
+        })
+        .catch(err => {
+          console.warn("Auto-refresh failed:", err);
+        });
+    }, 540000);
+  </script>
+</body>
+</html>

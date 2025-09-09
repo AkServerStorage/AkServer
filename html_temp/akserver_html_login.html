@@ -1,0 +1,213 @@
+<!--
+=============================================================================
+AkServer – Proprietary Web Module
+=============================================================================
+
+Description:    Login page for AkServer with OTP verification.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
+
+Copyright © 2025 AkServer. All rights reserved.
+
+This software is proprietary and confidential.
+Redistribution, modification, or reverse engineering is strictly prohibited
+unless permitted by a commercial license agreement.
+
+For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
+-->
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>Login - AkServer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to bottom, #f5f7fa, #c3cfe2);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+    }
+    @supports (height: 100dvh) {
+      html, body {
+        height: 100dvh;
+      }
+    }
+    .container {
+      background: white;
+      padding: 36px 30px;
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      width: 95%;
+      max-width: 380px;
+      text-align: center;
+      animation: scaleIn 0.5s ease-in-out;
+    }
+    @keyframes scaleIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .header-logo {
+      width: 65px;
+      margin: 0 auto 12px auto;
+      animation: popFade 0.6s ease-in-out;
+    }
+    @keyframes popFade {
+      0% { transform: scale(0.6); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    h2 {
+      margin-bottom: 25px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #0056b3;
+    }
+    .otp-inputs {
+      display: flex;
+      justify-content: space-between;
+      gap: 6px;
+      margin-bottom: 28px;
+    }
+    .otp-inputs input {
+      width: 46px;
+      height: 54px;
+      font-size: 1.7rem;
+      text-align: center;
+      border: 1px solid #ccd1d9;
+      border-radius: 12px;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.05);
+      transition: all 0.2s ease;
+      background: #f9f9f9;
+    }
+    .otp-inputs input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+      outline: none;
+      transform: scale(1.08);
+      background: white;
+    }
+    .otp-inputs input.filled {
+      animation: pulse 0.2s ease;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    button {
+      background: linear-gradient(to right, #0056b3, #007bff);
+      color: white;
+      border: none;
+      padding: 12px;
+      width: 100%;
+      font-size: 1rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.3s ease;
+      box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+    }
+    button:hover {
+      background: linear-gradient(to right, #004494, #0066cc);
+      box-shadow: 0 6px 20px rgba(0, 86, 179, 0.4);
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .message {
+      margin-top: 15px;
+      font-size: 0.9em;
+      color: red;
+    }
+    .footer {
+      font-size: 0.75em;
+      color: #777;
+      margin-top: 25px;
+    }
+    @media (max-height: 500px) {
+      body {
+        align-items: flex-start;
+        padding-top: 3vh;
+      }
+      .container {
+        padding: 20px;
+        border-radius: 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container" id="container">
+    <img src="/static/akserver_logo.png" alt="akserver Logo" class="header-logo" />
+    <h2>AkServer Login</h2>
+    <form id="otpForm" action="/login" method="post" autocomplete="off">
+      <div class="otp-inputs">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" name="otp1" required autocomplete="one-time-code">
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" name="otp2" required>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" name="otp3" required>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" name="otp4" required>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" name="otp5" required>
+        <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" name="otp6" required>
+      </div>
+      <input type="hidden" id="otp" name="otp">
+      <button type="submit">Login</button>
+    </form>
+    {{message_placeholder}}
+    <div class="footer">
+      © 2025 akserver. All rights reserved.
+    </div>
+  </div>
+
+  <script>
+    const inputs = document.querySelectorAll('.otp-inputs input');
+    inputs[0].focus();
+    inputs.forEach((input, idx) => {
+      input.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
+        if (this.value) {
+          this.classList.add("filled");
+          setTimeout(() => this.classList.remove("filled"), 200);
+          if (idx < inputs.length - 1) {
+            inputs[idx + 1].focus();
+          }
+        }
+        updateHiddenOtp();
+      });
+      input.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace' && !this.value && idx > 0) {
+          inputs[idx - 1].focus();
+        }
+      });
+      input.addEventListener('focus', () => {
+        const container = document.getElementById('container');
+        setTimeout(() => {
+          container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 200);
+      });
+    });
+
+    function updateHiddenOtp() {
+      document.getElementById('otp').value = Array.from(inputs).map(i => i.value).join('');
+    }
+
+    document.getElementById('otpForm').addEventListener('submit', function(e) {
+      updateHiddenOtp();
+      if (document.getElementById('otp').value.length !== 6) {
+        e.preventDefault();
+        alert('Please enter the 6-digit OTP.');
+      }
+    });
+  </script>
+</body>
+</html>
