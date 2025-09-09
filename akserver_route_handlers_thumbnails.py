@@ -1,22 +1,11 @@
 # =============================================================================
-# akserver - Thumbnail Utilities (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
 """
-File:           akserver_route_handlers_thumbnails.py
 Description:    Provides utilities for generating and serving video and image thumbnails.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
-
-This software handles the asynchronous generation and serving of media thumbnails,
-including:
-- Asynchronous thumbnail generation for videos using a worker thread pool.
-- Secure serving of generated thumbnail files.
-
-Third-party components used:
-- moviepy (MIT): Video thumbnail generation
-- Pillow (PIL) (BSD): Image resizing and saving
-- concurrent.futures: Thread pool management
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
 © 2025 akserver. All rights reserved.
 
@@ -26,6 +15,7 @@ unless permitted by a commercial license agreement.
 
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
+
 
 # ------------------------------------------------------------------ Python Standard Library Imports
 
@@ -82,8 +72,6 @@ def start_thumbnail_workers(worker_count=2, logger=None):
         t = threading.Thread(target=_thumbnail_worker, daemon=True, args=(logger,))
         t.name = f"ThumbnailWorker-{i+1}"
         t.start()
-    if logger:
-        logger.info(f"[Async Thumbnail] Started {worker_count} worker threads.")
 
 
 def enqueue_thumbnail(file_path, save_dir):
@@ -156,12 +144,8 @@ def generate_thumbnails_for_folder(video_folder, logger=None, time_sec=1.5, max_
                     video_files.append(video_path)
 
     if not video_files:
-        if logger:
-            logger.info("No new video files found for thumbnail generation.")
         return []
 
-    if logger:
-        logger.info(f"Starting thumbnail generation for {len(video_files)} videos using {max_workers} threads...")
 
     with ThreadPoolExecutor(max_workers=max_workers) as executor:
         future_to_video = {executor.submit(generate_thumbnail_for_video, vf, video_folder, time_sec): vf
@@ -173,8 +157,6 @@ def generate_thumbnails_for_folder(video_folder, logger=None, time_sec=1.5, max_
                 thumb_path = future.result()
                 if thumb_path:
                     thumbs.append(thumb_path)
-                    if logger:
-                        logger.info(f"Thumbnail created: {thumb_path}")
             except Exception as e:
                 if logger:
                     logger.warning(f"Thumbnail generation failed for {video_path}: {e}")

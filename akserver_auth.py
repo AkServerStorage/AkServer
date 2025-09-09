@@ -1,20 +1,14 @@
 # =============================================================================
-# akserver - Secure Local File Server (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           akserver_auth.py
 Description:    Device authentication and secure session management.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-This software provides a robust and secure authentication layer, including:
-- One-Time Password (OTP) generation and verification.
-- Trust management for registered devices using secure tokens.
-- Creation and validation of active user sessions.
-- Secure, thread-safe management of authentication state.
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -25,12 +19,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ---------------------------------------------------- Python Standard Library Imports
 
-import datetime
-import logging
-import random
-import secrets
-import threading
-import time
+import datetime, logging, random, secrets, threading, time
 from http.cookies import SimpleCookie
 from typing import TYPE_CHECKING
 
@@ -62,21 +51,15 @@ class AuthManager:
         self.trusted_devices_file_path = trusted_devices_file_path
 
         self._current_otp: str | None = None
-        self._otp_generation_time: float = 0  # noqa: E501
+        self._otp_generation_time: float = 0
         self._pending_device_registration: dict[str, dict] = {}
         self._authenticated_sessions: dict[str, dict] = {}
         self._lock = threading.Lock()
 
-        if self._logger:
-            self._logger.info("Authentication manager initialized.")
-
     def _log(self, level, message, exc_info=False):
-        if self._logger:
-            self._logger.log(
-                level, f"[Auth] {message}", exc_info=exc_info
-            )  # noqa: E501
-        else:
-            print(f"[Auth Fallback] {logging.getLevelName(level)}: {message}")
+        """Centralized logging for AuthManager (production-safe)."""
+        self._logger.log(level, f"[Auth] {message}", exc_info=exc_info)
+
 
     @staticmethod
     def generate_device_token() -> str:
@@ -244,13 +227,6 @@ class AuthManager:
                                 "name": dev_name,
                                 "source": "device_token",
                             }
-                        self._log(
-                            logging.INFO,
-                            (
-                                f"Authenticated via device token from {client_ip} "
-                                f"(Device: '{dev_name}', Token: ...{device_token[-6:]})"
-                            ),
-                        )
                         return True, dev_name
             except Exception as e:
                 self._log(
@@ -265,7 +241,7 @@ class AuthManager:
                 if (
                     time.time() - session_data.get("last_seen", 0)
                     < SESSION_VALIDITY_DURATION
-                ):  # noqa: E501
+                ):
                     session_data["last_seen"] = time.time()
                     dev_name = session_data.get("name", client_ip)
                     self._log(

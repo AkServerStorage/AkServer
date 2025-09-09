@@ -1,22 +1,11 @@
 # =============================================================================
-# akserver - File Handling & Serving (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
 """
-File:           akserver_route_handlers_files.py
 Description:    Contains route handling logic for file views, uploads, and downloads.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
-
-This software handles core file management operations, including:
-- Serving a dynamic HTML page to browse files and folders.
-- Securely serving individual files with support for HTTP range requests.
-- Handling secure file uploads.
-
-Third-party components used:
-- Werkzeug (BSD): Form parsing
-- Pillow (PIL) (BSD): Image dimension retrieval
-- akserver_route_handlers_thumbnails: Video thumbnail generation
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
 © 2025 akserver. All rights reserved.
 
@@ -29,16 +18,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ------------------------------------------------------------------ Python Standard Library Imports
 
-import os
-import re
-import ssl
-import time
-import html
-import json
-import shutil
-import socket
-import mimetypes
-import threading
+import os, re, ssl, time, html, json, shutil, socket, mimetypes, threading
 from urllib.parse import parse_qs, quote, unquote, urlparse
 
 # ------------------------------------------------------------------ Third-party
@@ -54,6 +34,7 @@ from akserver_ssl_util import generate_download_token, verify_download_token, ve
 from akserver_route_handlers_thumbnails import generate_thumbnail_for_video
 from akserver_route_handlers import generic_file_svg, _sanitize_relative_path, format_file_size
 from akserver_trial_status import trial_required
+
 # ------------------------------------------------------------------ File Browser
 
 @trial_required
@@ -70,11 +51,10 @@ def handle_get_view_files(handler):
                 html.escape(part)}</a>'
         return breadcrumb
 
-    # System or internal folders to exclude from UI and logic
     EXCLUDED_FOLDERS = {
         ".thumbnails",
-        ".akserver_tmp",  # any future temp files
-        ".akserver_logs",  # if you log into a subfolder
+        ".akserver_tmp", 
+        ".akserver_logs",
     }
 
     if handler.AUTH_ENABLED and not handler._is_authenticated():
@@ -195,7 +175,7 @@ def handle_get_view_files(handler):
                 image_exts + video_exts + doc_exts + audio_exts + archive_exts
             )
 
-        return True  # "all"
+        return True
 
     try:
         if not os.path.exists(folder_path):
@@ -225,7 +205,7 @@ def handle_get_view_files(handler):
                 escaped_name = html.escape(entry)
                 if os.path.isdir(full_path):
                     if entry == ".thumbnails":
-                        continue  # Skip internal folders
+                        continue 
 
                     folder_items_html += f"""
                     <li class="file-item folder-item">
@@ -255,7 +235,6 @@ def handle_get_view_files(handler):
                     human_size = format_file_size(file_size)
 
                     preview_block = ""
-                    # --- PREVIEW BLOCK ---
                     if ext in [".jpg", ".jpeg", ".png", ".gif", ".webp"]:
                         try:
                             with Image.open(full_path) as img:
@@ -430,6 +409,7 @@ def handle_get_view_files(handler):
         handler._send_response_data(b"Internal Server Error", code=500)
 
 # ------------------------------------------------------------------ File Download & Streaming
+
 @trial_required
 def handle_get_file(handler):
 
@@ -459,7 +439,6 @@ def handle_get_file(handler):
                 return
 
         full_path = os.path.abspath(os.path.join(handler.SAVE_DIR, file_path))
-        handler.server_logger.info(f"[GET_FILE] full_path check: {full_path}")
         handler.server_logger.debug(
             f"[GET_FILE] Resolved file path: {full_path}, SAVE_DIR: {
                 handler.SAVE_DIR}, exists: {
@@ -470,7 +449,6 @@ def handle_get_file(handler):
         )
         if not full_path.startswith(os.path.abspath(handler.SAVE_DIR)):
 
-            # Prevent access to internal akserver system folders
             blocked_names = [".thumbnails", ".akserver_tmp", ".akserver_logs"]
             for part in full_path.split(os.sep):
                 if part in blocked_names:
@@ -678,8 +656,6 @@ def handle_get_file(handler):
 # ------------------------------------------------------------------ File Upload
 
 def handle_post_upload(handler):
-
-    # --- Authentication Check ---
     if handler.AUTH_ENABLED and not handler._is_authenticated():
         handler.server_logger.warning(
             f"Unauthorized upload attempt from {handler.client_address[0]}"
@@ -692,7 +668,6 @@ def handle_post_upload(handler):
         return
 
     try:
-        # --- Parse Form Data ---
         content_length = int(handler.headers.get("Content-Length", "0"))
         environ = {
             "REQUEST_METHOD": "POST",
@@ -702,7 +677,6 @@ def handle_post_upload(handler):
         }
         _, form, files = parse_form_data(environ)
 
-        # --- Secure Token Validation ---
         upload_token = form.get("upload_token", "")
         if isinstance(upload_token, list):
             upload_token = upload_token[0]
@@ -717,7 +691,6 @@ def handle_post_upload(handler):
             )
             return
 
-        # --- Prepare Upload ---
         uploaded_files_count = 0
         save_dir = CONFIG["save_dir"]
         os.makedirs(save_dir, exist_ok=True)
@@ -733,44 +706,33 @@ def handle_post_upload(handler):
             filename_sanitized = _sanitize_relative_path(filestorage.filename)
             filepath = os.path.join(save_dir, filename_sanitized)
 
-            # Prevent directory traversal
             if not filepath.startswith(save_dir + os.sep):
                 handler.server_logger.warning(f"Traversal attempt: {filepath}")
                 continue
 
-            # Skip existing files
             if os.path.exists(filepath):
-                handler.server_logger.info(f"Skipped existing file: {filepath}")
                 continue
 
             os.makedirs(os.path.dirname(filepath), exist_ok=True)
 
-            # Save file efficiently using buffered copy
             with open(filepath, "wb") as f:
-                shutil.copyfileobj(filestorage.stream, f, length=1024*1024)  # 1MB buffer
+                shutil.copyfileobj(filestorage.stream, f, length=1024*1024)
 
-            handler.server_logger.info(
-                f"Uploaded file: '{filename_sanitized}' to '{filepath}' from {handler.client_address[0]}"
-            )
             uploaded_files_count += 1
 
-            # Queue video thumbnails
             if filename_sanitized.lower().endswith((".mp4", ".mov", ".avi", ".webm", ".mkv", ".flv")):
                 thumbnail_queue.append(filepath)
 
-        # --- Async Thumbnail Generation (batch) ---
         if thumbnail_queue:
             def _generate_thumbnails():
                 for video_path in thumbnail_queue:
                     try:
                         generate_thumbnail_for_video(video_path, save_dir, time_sec=1.5)
-                        handler.server_logger.info(f"Thumbnail generated: {video_path}")
                     except Exception as e:
                         handler.server_logger.warning(f"Thumbnail failed for {video_path}: {e}")
 
             threading.Thread(target=_generate_thumbnails, daemon=True).start()
 
-        # --- Response ---
         response_message = (
             {"success": True, "message": f"Sync complete. {uploaded_files_count} files uploaded."}
             if uploaded_files_count > 0
@@ -815,11 +777,9 @@ def route_post_upload(handler):
 def handle_post_download(handler):
     """Fast, secure streaming download handler."""
 
-    # --- Ensure authentication ---
     if not handler._ensure_authenticated():
         return
 
-    # --- Validate Content-Length ---
     content_length = int(handler.headers.get("Content-Length", 0))
     if content_length == 0:
         handler.server_logger.warning(
@@ -828,7 +788,6 @@ def handle_post_download(handler):
         handler.send_error(400, "Bad Request: Content-Length missing or zero.")
         return
 
-    # --- Read and decode POST body ---
     try:
         post_data_bytes = handler.rfile.read(content_length)
         post_data_str = post_data_bytes.decode("utf-8")
@@ -839,7 +798,6 @@ def handle_post_download(handler):
         handler.send_error(400, "Bad Request: Invalid encoding.")
         return
 
-    # --- Parse query string ---
     parsed_data = parse_qs(post_data_str)
     filename_list = parsed_data.get("filename", [])
     token_list = parsed_data.get("token", [])
@@ -854,7 +812,6 @@ def handle_post_download(handler):
 
     raw_filename = filename_list[0]
 
-    # --- Token verification ---
     if handler.AUTH_ENABLED and not verify_download_token(raw_filename, token):
         handler.server_logger.warning(
             f"Unauthorized token attempt for download: {raw_filename}"
@@ -862,12 +819,10 @@ def handle_post_download(handler):
         handler._send_response_data(b"Access denied", code=403)
         return
 
-    # --- Validate filepath securely ---
     abs_filepath = handler._get_validated_filepath(raw_filename)
     if not abs_filepath:
         return
 
-    # --- Stream file efficiently ---
     try:
         file_size = os.path.getsize(abs_filepath)
         mimetype, _ = mimetypes.guess_type(abs_filepath)
@@ -885,8 +840,7 @@ def handle_post_download(handler):
         handler.send_header("Expires", "0")
         handler.end_headers()
 
-        # --- Stream in chunks: larger for faster LAN transfers ---
-        chunk_size = 2 * 1024 * 1024  # 2 MB
+        chunk_size = 2 * 1024 * 1024
         with open(abs_filepath, "rb") as f:
             while True:
                 chunk = f.read(chunk_size)
@@ -894,10 +848,6 @@ def handle_post_download(handler):
                     break
                 handler.wfile.write(chunk)
                 handler.wfile.flush()
-
-        handler.server_logger.info(
-            f"File served: '{os.path.basename(abs_filepath)}' to {handler.client_address[0]}"
-        )
 
     except BrokenPipeError:
         handler.server_logger.warning(

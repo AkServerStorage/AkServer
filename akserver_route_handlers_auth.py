@@ -1,20 +1,12 @@
 # =============================================================================
-# akserver - Handling Login, OTP (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           akserver_route_handlers_auth.py
 Description:    Contains core route handling logic for authentication and user management.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
-
-This software handles core authentication operations, including:
-- Serving login, logout, and device registration pages.
-- Handling OTP-based login and device verification.
-- Managing user sessions and cookies.
-
-Third-party components used:
-- None directly in this file.
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
 © 2025 akserver. All rights reserved.
 
@@ -24,8 +16,6 @@ unless permitted by a commercial license agreement.
 
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
-
-
 
 # ------------------------------------------------------------------ Python Standard Library Imports
 
@@ -40,6 +30,7 @@ from akserver_html import get_html
 from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ Login function
+
 @trial_required
 def handle_get_login_page(handler, message):
     """Handles GET requests for the /login path."""
@@ -50,7 +41,7 @@ def handle_get_login_page(handler, message):
             return
         
         html_content = get_html(
-            "akserver_html_login.html", # <-- USE THIS FILE NAME FOR NOW
+            "akserver_html_login.html",
             message_placeholder=(
                 f"<div class='message'>{message}</div>" if message else ""
             )
@@ -79,19 +70,16 @@ def handle_post_login(handler):
     )
 
     if verified:
-        # After OTP verification, check if this IP is associated with an already trusted device.
         trusted_device_info = handler.auth_manager_instance.get_trusted_device_by_ip(
             client_ip
         )
         if trusted_device_info:
-            # Device is already trusted, create a session and redirect to main page
             existing_token, device_name = trusted_device_info
             handler.auth_manager_instance.create_session_for_trusted_device(
                 client_ip, existing_token, device_name
             )
             handler._redirect("/", device_token_to_set=existing_token)
         else:
-            # New device or IP not associated with a trusted device, proceed with registration
             handler._redirect("/register_device_name")
     else:
         handler._redirect(f"/login?message={quote(message)}")
@@ -108,7 +96,6 @@ def handle_get_logout(handler, message=None):
                 handler.send_error(500, "Authentication manager not available")
                 return
 
-            # Perform logout
             try:
                 handler.auth_manager_instance.logout_client_session(handler.client_address[0])
             except Exception as e:
@@ -120,14 +107,12 @@ def handle_get_logout(handler, message=None):
                 f"User {handler.client_address[0]} logged out. IP session cleared and device token cookie removed."
             )
 
-            # Delete cookie safely
             cookie_attrs = "; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=0"
             handler.send_response(200)
             handler.send_header("Content-type", "text/html; charset=utf-8")
             handler.send_header("Set-Cookie", f"{DEVICE_TOKEN_COOKIE_NAME}=; {cookie_attrs}")
             handler.end_headers()
 
-            # Render logout page
             html_content = get_html("akserver_html_logout.html")
             handler.wfile.write(html_content.encode("utf-8"))
 
@@ -138,8 +123,9 @@ def handle_get_logout(handler, message=None):
         handler.send_error(500, f"Unhandled error in logout: {e}")
 
 # ------------------------------------------------------------------ OTP function
+
 @trial_required
-def handle_get_request_otp(handler): # handle request otp
+def handle_get_request_otp(handler): 
     """Handles GET requests for the /request_otp path."""
 
     if not handler.AUTH_ENABLED: 
@@ -152,7 +138,7 @@ def handle_get_request_otp(handler): # handle request otp
         ) 
         return 
 
-    new_otp = handler.auth_manager_instance.request_new_otp() # Request a new OTP
+    new_otp = handler.auth_manager_instance.request_new_otp()
     response_payload = {"success": True, "message": "OTP generated."} 
 
     if handler.client_address[0] == "127.0.0.1": 
@@ -164,7 +150,6 @@ def handle_get_request_otp(handler): # handle request otp
             f"OTP generated and provided in response to local client {handler.client_address[0]}."
         ) 
     else: 
-        # For remote clients, we do not send the OTP in the response for security reasons.
         handler.server_logger.info( 
             f"OTP generated (but not sent in response) for remote client {handler.client_address[0]}." 
         ) 
@@ -220,15 +205,12 @@ def handle_post_submit_device_name(handler):
 
 def handle_get_register_device_name(handler, message: str | None = None) -> None:
     """Handles GET requests for /register_device_name."""
-    
-    # === Auth Enabled Check ===
+
     if not handler.AUTH_ENABLED:
         handler._redirect("/")
         return
 
     client_ip = handler.client_address[0]
-
-    # === Ensure client is pending registration ===
     if not handler.auth_manager_instance.is_client_pending_registration(client_ip):
         server_logger.warning(
             f"Unauthorized access to /register_device_name from {client_ip}. Redirecting to login."
@@ -236,7 +218,6 @@ def handle_get_register_device_name(handler, message: str | None = None) -> None
         handler._redirect("/login?message=Please login first.")
         return
 
-    # === Render Registration Form ===
     html_content = get_html(
         "akserver_html_device_name.html",
         message_placeholder=(

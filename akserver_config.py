@@ -1,20 +1,14 @@
 # =============================================================================
-# akserver - Configuration Manager (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           akserver_Config.py
 Description:    Manages and synchronizes configuration settings for akserver's GUI and server components.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-This software provides core configuration and resource management capabilities, including:
-- Centralized application and user data path resolution.
-- Dynamic port detection to prevent conflicts.
-- Secure, platform-aware secret key generation and rotation.
-- Production-grade rotating file and console logging.
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -25,15 +19,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ------------------------------------------------------------------ Python Standard library
 
-import os
-import sys
-import json
-import logging
-import socket
-import subprocess
-import base64
-import secrets
-import getpass
+import os, sys, json, socket, logging, base64, secrets, getpass, subprocess
 from logging.handlers import RotatingFileHandler
 from typing import Optional
 
@@ -51,7 +37,7 @@ CONFIG = DEFAULT_CONFIG.copy()
 if sys.platform == "win32":
     PROGRAM_DATA_PATH = os.getenv("PROGRAMDATA", r"C:\ProgramData")
     APP_DATA_ROOT = os.path.join(PROGRAM_DATA_PATH, APP_NAME, f"{APP_NAME}_Data_Server")
-    # user-level fallback
+
     USER_DATA_ROOT = os.path.join(os.path.expanduser("~"), f".{APP_NAME}")
 else:
     APP_DATA_ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), f"{APP_NAME}_Data_Server")
@@ -71,7 +57,7 @@ DEFAULT_SAVE_DIR = DEFAULT_CONFIG["save_dir"]
 _SECRET_FILENAME = "secret.key"
 _SECRET_FILE_PATH = os.path.join(SERVER_DATA_PATH, _SECRET_FILENAME)
 ENV_SECRET_NAME = "akserver_SECRET_KEY"
-_SECRET_BYTE_LEN = 32  # 256-bit raw key length
+_SECRET_BYTE_LEN = 32 
 
 # ------------------------------------------------------------------ Utility helpers for directories / file I/O / encoding
 
@@ -140,13 +126,11 @@ def setup_logger(app_name: str = APP_NAME, log_dir: str = LOG_DIR, log_file: str
         except Exception:
             pass
 
-        # --- Rotating file handler ---
         file_handler = RotatingFileHandler(os.path.join(log_dir, log_file), maxBytes=5*1024*1024, backupCount=5)
         file_formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(funcName)s - %(message)s')
         file_handler.setFormatter(file_formatter)
         file_handler.setLevel(logging.DEBUG)
 
-        # --- Console handler ---
         console_handler = logging.StreamHandler(sys.stdout)
         console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
         console_handler.setFormatter(console_formatter)
@@ -172,7 +156,7 @@ def get_or_create_secret_key() -> bytes:
       3) Generate, persist, return new secret.
     Returns: raw bytes key (suitable for HMAC usage).
     """
-    # --- environment override ---
+
     env = os.environ.get(ENV_SECRET_NAME)
     if env:
         try:
@@ -183,7 +167,6 @@ def get_or_create_secret_key() -> bytes:
             except Exception:
                 return env.encode("utf-8")
 
-    # --- file on SERVER_DATA_PATH ---
     file_val = _read_secret_file(_SECRET_FILE_PATH)
     if file_val:
         try:
@@ -194,14 +177,14 @@ def get_or_create_secret_key() -> bytes:
             except Exception:
                 return file_val.encode("utf-8")
 
-    # --- generate, persist (best-effort), return ---
+
     raw = secrets.token_bytes(_SECRET_BYTE_LEN)
     encoded = _encode_secret(raw)
     try:
         _write_secret_file_atomic(_SECRET_FILE_PATH, encoded)
         LOGGER.info("Generated and persisted new secret key (file created).")
     except Exception as e:
-        # --- fallback to user-level hidden file ---
+
         fallback = os.path.join(os.path.expanduser("~"), f".{_SECRET_FILENAME}")
         try:
             _write_secret_file_atomic(fallback, encoded)
@@ -263,7 +246,7 @@ def get_available_port(preferred_port: int = 8443, host: str = "127.0.0.1") -> i
             s.bind((host, preferred_port))
             return preferred_port
     except OSError:
-        # find any free port
+
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((host, 0))
             return s.getsockname()[1]

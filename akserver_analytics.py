@@ -1,17 +1,14 @@
 # =============================================================================
-# akserver - Local Analytics Logging (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           analytics.py
 Description:    Handles offline analytics logging and reporting for akserver.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Third-Party Dependencies:
-- requests (Apache 2.0 License): https://requests.readthedocs.io/
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -20,34 +17,28 @@ unless permitted by a commercial license agreement.
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
-# ----------------------------- Python Standard Library Imports
-import datetime
-import json
-import logging
-import os
-import platform
-import urllib.parse
-import uuid
+# ------------------------------------------------------------------ Python Standard library
+import datetime, json, logging, os, platform, urllib.parse, uuid
 
-# ----------------------------- Third-Party Library Imports
-# Library: requests (Apache License 2.0)
+# ------------------------------------------------------------------Third-Party
 import requests
-
-# Library: pyautogui (BSD License)
 import pyautogui
+
+# ------------------------------------------------------------------ Local modules
+
 from akserver_trusted_device_manager import get_current_trusted_device_count
 
 
-# Configure logging for analytics module
-analytics_logger = logging.getLogger(__name__)
+# ------------------------------------------------------------------ Subdirectory Paths
 
-# --- Configuration for Persistent Device ID & First Seen ---
-# This file will store your unique device ID and the app's first run date.
+analytics_logger = logging.getLogger(__name__)
 DEVICE_INFO_FILE = os.path.join(
     os.getenv("APPDATA", os.path.expanduser("~")),
     "akserver_device_info.json"
-) # Changed to .json for multiple values
+)
 
+
+# ------------------------------------------------------------------ functions
 
 def _get_persistent_device_info():
     """
@@ -77,7 +68,6 @@ def _get_persistent_device_info():
                 f"Could not read/parse device info from {DEVICE_INFO_FILE}: {e}. Generating new info."
             )
 
-    # If file doesn't exist, is empty/corrupt, or info is incomplete, generate new values
     device_info["device_id"] = f"APP_DEVICE_{str(uuid.uuid4())}"
     device_info["first_seen_date"] = datetime.datetime.now().strftime("%Y-%m-%d")
 
@@ -96,7 +86,7 @@ def _get_persistent_device_info():
         analytics_logger.error(
             f"Failed to write device info to file {DEVICE_INFO_FILE}: {e}. Using temporary IDs."
         )
-        # Fallback: if file write fails, use temporary unique IDs for this session
+
         return {
             "device_id": f"TEMP_ID_{str(uuid.uuid4())}",
             "first_seen_date": datetime.datetime.now().strftime("%Y-%m-%d"),
@@ -152,47 +142,38 @@ def send_usage_to_google_form(data):
         analytics_logger.error("Error sending usage data: Request timed out.")
         return False
     except requests.exceptions.ConnectionError as e:
-        analytics_logger.error(f"Error sending usage data: Connection error - {e}")
+        analytics_logger.error(f"Error sending usage data: Connection error")
         return False
     except Exception as e:
         analytics_logger.exception(
-            f"An unexpected error occurred while sending usage data: {e}"
+            f"An unexpected error occurred while sending usage data"
         )
         return False
 
 
-# --- Main function to generate and send analytics data ---
 def get_and_send_analytics_data():
     """
     Generates analytics data, including persistent device info, and sends it.
     """
     current_time = datetime.datetime.now()
 
-    # Get persistent device ID and first_seen_date
     device_info = _get_persistent_device_info()
     persistent_device_id = device_info["device_id"]
     first_seen_str = device_info["first_seen_date"]
 
-    # Calculate install_age
     try:
         first_seen_datetime = datetime.datetime.strptime(first_seen_str, "%Y-%m-%d")
         install_age_days = (current_time - first_seen_datetime).days
         install_age_str = f"{install_age_days} days"
     except ValueError:
-        install_age_str = "Unknown"  # Fallback if first_seen_str is malformed
+        install_age_str = "Unknown" 
 
-    # Get timezone and UTC offset
-    # Note: Getting exact timezone name and offset in Python can be complex due to DST.
-    # This is a simplified approach for UTC offset. For full timezone names, consider 'pytz' or 'dateutil'.
     delta = current_time - datetime.datetime.utcnow()
     total_seconds = delta.days * 86400 + delta.seconds
     hours = total_seconds // 3600
     minutes = (total_seconds % 3600) // 60
     utc_offset_str = f"{'+' if hours >= 0 else ''}{hours:02d}:{minutes:02d}"
 
-    # For 'screen' and 'version', you need to integrate with your application's specifics.
-    # Placeholder for screen resolution - requires a GUI library like 'pyautogui' or system specific calls.
-    # Example (requires 'pip install pyautogui'):
     try:
         screen_resolution = f"{pyautogui.size().width}x{pyautogui.size().height}"
     except ImportError:
@@ -206,10 +187,8 @@ def get_and_send_analytics_data():
         analytics_logger.error(f"Error getting screen resolution: {e}")
 
 
-    app_version = "1.0.0"  # <-- **REPLACE THIS with your actual app version**
+    app_version = "1.0.0"
 
-
-        # Get the current count of trusted devices
     TRUSTED_DEVICES_PATH = os.path.join(
         os.environ.get("PROGRAMDATA", "C:\\ProgramData"),
         "akserver",
@@ -228,18 +207,18 @@ def get_and_send_analytics_data():
         "device_id": persistent_device_id,
         "first_seen": first_seen_str,
         "last_seen": current_time.strftime("%Y-%m-%d"),
-        "active_days": 1,  # Apps Script manages this (increments for duplicates)
+        "active_days": 1,
         "install_age": install_age_str,
-        "trial_status": "Active",  # This might also need to be dynamic based on your app's trial logic
+        "trial_status": "Active", 
         "platform": platform.system(),
         "arch": platform.machine(),
         "os_version": platform.version(),
-        "language": "en-US",  # Use locale.getdefaultlocale()[0] if you want system language
+        "language": "en-US",
         "screen": screen_resolution,
         "version": app_version,
         "timezone": datetime.datetime.now(datetime.timezone.utc)
         .astimezone()
-        .tzname(),  # Gets local timezone name
+        .tzname(),
         "utc_offset": utc_offset_str,
         "device_count": device_count,
     }

@@ -1,24 +1,11 @@
 # =============================================================================
-# akserver - Route Handlers (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
 """
-File:           akserver_route_handlers.py
 Description:    Contains route handling logic for file views, uploads, previews.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
-
-This software provides core server-side logic for the akserver application, including:
-- Secure file upload and download endpoints.
-- Dynamic file and directory listings.
-- Image and video thumbnail generation for previews.
-- Login and logout authentication handlers.
-
-
-Third-party components used:
-- moviepy (MIT): Video thumbnail generation
-- Pillow (PIL) (BSD): Image resizing and saving
-- Werkzeug (BSD): Form parsing
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
 © 2025 akserver. All rights reserved.
 
@@ -31,13 +18,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ------------------------------------------------------------------ Python Standard Library Imports
 
-import mimetypes
-import os
-import platform
-import re
-import shutil
-import time
-import unicodedata
+import mimetypes, os, platform, re, shutil, time, unicodedata
 
 # ------------------------------------------------------------------ Local Module Imports
 
@@ -48,10 +29,8 @@ from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ Constants & Configuration
 
-# Regex to strip non-alphanumeric, non-dot, non-underscore, non-hyphen characters
 _filename_strip_re = re.compile(r"[^A-Za-z0-9_.-]")
 
-# Reserved Windows Device Filenames (e.g., CON, PRN, AUX)
 _windows_device_files = {
     "CON",
     "PRN",
@@ -63,23 +42,20 @@ _windows_device_files = {
 
 BUNDLED_FILES_PATH = os.path.join(os.path.dirname(__file__), "static")
 
-# Comprehensive color map for file extensions, used for dynamic SVG icons
 EXT_COLOR_MAP = {
-    # Document Files
-    ".pdf": "#d32f2f",  # Red
-    ".doc": "#1565c0",  # Blue
+    ".pdf": "#d32f2f", 
+    ".doc": "#1565c0",  
     ".docx": "#1565c0",
-    ".odt": "#1e88e5",  # Lighter Blue
-    ".xls": "#2e7d32",  # Green
+    ".odt": "#1e88e5",  
+    ".xls": "#2e7d32",  
     ".xlsx": "#2e7d32",
     ".csv": "#43a047",
     ".tsv": "#388e3c",
     ".ods": "#66bb6a",
-    ".ppt": "#d84315",  # Orange
+    ".ppt": "#d84315",  
     ".pptx": "#d84315",
     ".odp": "#fb8c00",
-    # Text & Config
-    ".txt": "#607d8b",  # Gray-Blue
+    ".txt": "#607d8b",  
     ".rtf": "#78909c",
     ".md": "#546e7a",
     ".log": "#455a64",
@@ -87,16 +63,14 @@ EXT_COLOR_MAP = {
     ".conf": "#37474f",
     ".ini": "#37474f",
     ".env": "#455a64",
-    ".json": "#f4a261",  # Light Orange
+    ".json": "#f4a261",  
     ".yaml": "#fbc02d",
     ".yml": "#fbc02d",
-    # Audio
     ".mp3": "#00acc1",
     ".wav": "#26c6da",
     ".ogg": "#0097a7",
     ".m4a": "#00bcd4",
     ".aac": "#00bcd4",
-    # Archives
     ".zip": "#ff9800",
     ".rar": "#f57c00",
     ".7z": "#ef6c00",
@@ -105,13 +79,11 @@ EXT_COLOR_MAP = {
     ".xz": "#f4511e",
     ".iso": "#5d4037",
     ".bin": "#3e2723",
-    # Executables
     ".exe": "#673ab7",
     ".msi": "#512da8",
     ".sh": "#5e35b1",
     ".bat": "#7e57c2",
     ".app": "#9575cd",
-    # Programming
     ".py": "#3776ab",
     ".js": "#f7df1e",
     ".ts": "#3178c6",
@@ -126,7 +98,6 @@ EXT_COLOR_MAP = {
     ".rb": "#e91e63",
     ".go": "#00acc1",
     ".rs": "#8d6e63",
-    # Misc / System
     ".bak": "#90a4ae",
     ".tmp": "#b0bec5",
     ".db": "#8e24aa",
@@ -139,36 +110,26 @@ EXT_COLOR_MAP = {
 
 def _sanitize_path_component(component: str) -> str:
     """Sanitizes a single path component (filename or directory name)."""
-
-    # Normalize Unicode characters
     component = unicodedata.normalize("NFKD", component)
-
-    # Encode to ASCII, ignoring unrepresentable characters, then decode back
     component = component.encode("ascii", "ignore").decode("ascii")
-
-    # Replace any characters not allowed in filenames with underscores
     component = _filename_strip_re.sub("_", component).strip("._")
-
-    # Handle Windows reserved names
     if os.name == "nt" and component.upper() in _windows_device_files:
-        component = f"_{component}"  # Prepend underscore to avoid conflict
-
+        component = f"_{component}"  
     return component
-
 
 def _sanitize_relative_path(rel_path: str) -> str:
     """Sanitizes a relative path, preserving directory structure."""
     parts = rel_path.split(
         "/"
-    )  # Always split by forward slash as webkitRelativePath uses it
+    )  
     sanitized_parts = []
     for part in parts:
-        if part == "" or part == ".":  # Skip empty parts or current directory
+        if part == "" or part == ".": 
             continue
-        if part == "..":  # Prevent directory traversal
+        if part == "..":  
             continue
         sanitized_parts.append(_sanitize_path_component(part))
-    return os.path.join(*sanitized_parts)  # Rejoin with OS-specific separator
+    return os.path.join(*sanitized_parts) 
 
 # ------------------------------------------------------------------ General Utility Functions
 
@@ -176,19 +137,16 @@ def _sanitize_relative_path(rel_path: str) -> str:
 def handle_get_root(handler, message=""):
     """Handles GET requests for the root path ('/')."""
     
-    # --- Authentication Check ---
     if handler.AUTH_ENABLED and not handler._is_authenticated():
         handler._redirect("/login")
         return
 
-    # --- Logout Link ---
     logout_link = (
         '<a href="/logout" class="logout-link">Logout</a>'
         if handler.AUTH_ENABLED
         else ""
     )
 
-    # --- Optional: Trial info for active users ---
     trial_status = check_trial()
     trial_message_html = (
         f"<div class='trial-info'>Trial active — Days left: {trial_status['days_left']}</div>"
@@ -196,7 +154,6 @@ def handle_get_root(handler, message=""):
         else "<div class='trial-expired'>Trial expired! Please contact support.</div>"
     )
 
-    # --- Upload Token & Device Info ---
     context = {
         "logout_placeholder": logout_link,
         "message_placeholder": f"<div class='message'>{message}</div>" if message else "",
@@ -208,7 +165,6 @@ def handle_get_root(handler, message=""):
         "version": "1.0.0",
     }
 
-    # --- Render HTML ---
     try:
         html_content = get_html("akserver_html_upload.html", **context)
         handler._send_response_data(html_content.encode("utf-8"))
@@ -248,7 +204,6 @@ def handle_get_static_file(handler, path):
     relative_path = path.replace("/static/", "", 1)
     file_path = os.path.join(BUNDLED_FILES_PATH, relative_path)
     
-    # Check for directory traversal attempts
     abs_bundled_path = os.path.abspath(BUNDLED_FILES_PATH)
     abs_requested_path = os.path.abspath(file_path)
     

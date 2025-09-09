@@ -1,21 +1,12 @@
 # =============================================================================
-# akserver - API Route Handlers (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           akserver_route_handler_api.py
 Description:    Contains API route handling logic for system status and device management.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
-
-This software provides API endpoints for:
-- Retrieving a list of trusted devices and active sessions.
-- Forgetting (removing) a trusted device.
-- Initiating a server shutdown (for local clients only).
-- Checking the server's operational status.
-
-Third-party components used:
-- None directly in this file.
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
 © 2025 akserver. All rights reserved.
 
@@ -67,6 +58,8 @@ def handle_get_api_devices(handler):
     handler._send_response_data(
         json.dumps(response_data).encode(), "application/json"
     )
+
+
 
 
 def handle_post_api_devices_forget(handler):

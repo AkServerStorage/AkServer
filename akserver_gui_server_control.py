@@ -1,32 +1,38 @@
 
 # =============================================================================
-# akserver - GUI Server Control Module (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File: akserver_gui_server_control.py
-Description: Handles starting/stopping akserver from GUI safely.
+Description:    Handles starting/stopping akserver from GUI safely.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Author: AkshAy S
-Version: 1.0.1
-License: akserver Custom Freemium License
+Copyright © 2025 AkServer. All rights reserved.
 
-© 2025 akserver. All rights reserved.
+This software is proprietary and confidential.
+Redistribution, modification, or reverse engineering is strictly prohibited
+unless permitted by a commercial license agreement.
+
+For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
-# ------------------------------------------------------------------ Imports
-import os
-import sys
-import ssl
-import urllib.request
-import threading
-import subprocess
-import time
+# ------------------------------------------------------------------  Python Standard Library
+
+import os, sys, ssl,  time, subprocess, urllib.request, threading
+
+# ------------------------------------------------------------------ Third-Party Imports
+
 from tkinter import messagebox
 from ttkbootstrap.constants import WARNING, INFO, SUCCESS, DANGER
+
+# ------------------------------------------------------------------ Local Modules
 
 from akserver_config import CONFIG, LOGGER as server_logger, PORT
 
 # ------------------------------------------------------------------ Helpers
+
 def _get_trial_status(app):
     """Return trial info dict: {'active': bool, 'days_left': int}"""
     return getattr(app, "get_trial_status", lambda: {"active": True, "days_left": 0})()
@@ -46,6 +52,7 @@ def _report_error(app, message):
         app.root.after(0, lambda: messagebox.showerror("Error", message))
 
 # ------------------------------------------------------------------ Server Status Check
+
 def check_server_status_api():
     """Return True if server responds to /api/status."""
     try:
@@ -57,6 +64,7 @@ def check_server_status_api():
         return False
 
 # ------------------------------------------------------------------ UI Updates
+
 def update_server_ui_state(app, is_running, status_text=None, status_color=None):
     """Update server label and button safely"""
     try:
@@ -64,7 +72,6 @@ def update_server_ui_state(app, is_running, status_text=None, status_color=None)
         trial_active = trial_info.get("active", True)
         days_left = trial_info.get("days_left", 0)
 
-        # --- Status label ---
         if getattr(app, "server_status_label", None) and app.server_status_label.winfo_exists():
             default_text = "Server Online" if is_running else "Server Offline"
             default_color = SUCCESS if is_running else DANGER
@@ -73,7 +80,6 @@ def update_server_ui_state(app, is_running, status_text=None, status_color=None)
             combined_color = DANGER if not trial_active else (status_color or default_color)
             app.server_status_label.config(text=combined_text, bootstyle=combined_color)
 
-        # --- Server button ---
         if getattr(app, "server_button", None) and app.server_button.winfo_exists():
             app.server_button.config(
                 text="Stop Server" if is_running else "Start Server",
@@ -83,9 +89,11 @@ def update_server_ui_state(app, is_running, status_text=None, status_color=None)
             _set_server_button_state(app, enabled=not busy)
 
     except Exception as e:
-        print(f"update_server_ui_state error: {e}")
+        server_logger.exception("update_server_ui_state error: %s", e)
+
 
 # ------------------------------------------------------------------ Server Control
+
 def start_server_logic(app):
     if getattr(app, "server_busy", False):
         return
@@ -109,7 +117,6 @@ def _start_server_thread_logic(app):
     try:
         from akserver_gui import APPLICATION_PATH, SERVER_SCRIPT_NAME
 
-        # Determine command
         if getattr(sys, "frozen", False):
             exe_path = os.path.join(APPLICATION_PATH, "akserver.exe")
             if not os.path.exists(exe_path):
@@ -136,7 +143,7 @@ def _start_server_thread_logic(app):
         )
 
         app.server_process = process
-        time.sleep(1)  # Could replace with polling for readiness
+        time.sleep(1)
         running = process.poll() is None
         app.root.after(0, lambda: update_server_ui_state(
             app,
@@ -171,6 +178,7 @@ def _stop_server_thread_logic(app):
         _set_server_button_state(app, enabled=True)
 
 # ------------------------------------------------------------------ Restart GUI
+
 def restart_server_logic(app):
     """Restart the GUI safely."""
     def _restart():

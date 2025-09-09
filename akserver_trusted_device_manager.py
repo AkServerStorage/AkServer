@@ -1,17 +1,14 @@
 # =============================================================================
-# akserver - Trusted Device Manager (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           akserver_trusted_device_manager.py
-Description:    Handles storing and managing trusted device tokens.
-Author:         AkshAy S (akserver Project)
+Description:    Handles storing and managing trusted device tokens
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-This file uses only Python standard libraries.
-No third-party components are included.
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -19,12 +16,10 @@ unless permitted by a commercial license agreement.
 
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
-# ----------------------------- Python Standard Library Imports
-import json
-import logging
-import os
-import threading
-import time
+
+# ------------------------------------------------------------------ Python Standard library
+
+import json, logging, os, threading, time
 from typing import Any, Optional
 
 
@@ -37,8 +32,6 @@ class TrustedDeviceManager:
         self._trusted_devices: list[dict[str, Any]] = []
         self._lock = threading.Lock()
         self._load_trusted_devices()
-
-    # -------------------- Internal Helpers --------------------
 
     def _load_trusted_devices(self) -> None:
         """Loads trusted devices from the specified file into memory."""
@@ -68,10 +61,6 @@ class TrustedDeviceManager:
                     )
                     self._trusted_devices = []
 
-                self.logger.info(
-                    f"Loaded {len(self._trusted_devices)} trusted devices from {self.file_path}."
-                )
-
             except json.JSONDecodeError:
                 self.logger.error(
                     f"Invalid JSON in {self.file_path}. Resetting trusted devices."
@@ -97,11 +86,9 @@ class TrustedDeviceManager:
         if not data:
             return []
 
-        # ✅ Modern format
         if all(isinstance(d, dict) and {"token", "name", "origin_ip", "timestamp"} <= d.keys() for d in data):
             return data
 
-        # ⚠️ Slightly old format (missing origin_ip/timestamp)
         if all(isinstance(d, dict) and {"token", "name"} <= d.keys() for d in data):
             self.logger.warning("Detected old trusted_devices format. Upgrading.")
             upgraded = [
@@ -117,7 +104,6 @@ class TrustedDeviceManager:
             self._save_trusted_devices()
             return upgraded
 
-        # ⚠️ Very old format (list of tokens)
         if all(isinstance(d, str) for d in data):
             self.logger.warning("Detected very old trusted_devices format. Upgrading.")
             upgraded = [
@@ -136,7 +122,6 @@ class TrustedDeviceManager:
         self.logger.error("Unrecognized trusted_devices format. Resetting list.")
         return []
 
-    # -------------------- Public API --------------------
 
     def add_trusted_device(self, token: str, name: str, origin_ip: str) -> None:
         """Adds a new trusted device to the list and saves it."""

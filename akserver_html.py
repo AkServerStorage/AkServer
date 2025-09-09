@@ -1,14 +1,14 @@
 # =============================================================================
-# akserver - HTML Templates (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
-"""
-File: akserver_html.py
-Description: Embedded HTML content for akserver pages.
-Author: AkshAy S (akserver Project)
-Version: 1.0.0
-License: akserver Custom Freemium License (See LICENSE.txt)
 
-© 2025 akserver. All rights reserved.
+"""
+Description:    Embedded HTML content for akserver pages.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
+
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -21,18 +21,24 @@ import os
 from jinja2 import Environment, FileSystemLoader
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-
-# Point directly to current folder (akserver_webui)
-WEBUI_DIR = BASE_DIR  
+WEBUI_DIR = os.path.join(BASE_DIR, "html_temp") 
 
 env = Environment(loader=FileSystemLoader(WEBUI_DIR))
 
 def get_html(template_name, **kwargs):
     """
-    Loads an HTML template and renders it with variables.
+    Render a template with Jinja2 and return fully processed HTML.
     """
     template = env.get_template(template_name)
     return template.render(**kwargs)
 
 
-
+# ---------------- Example usage ----------------
+if __name__ == "__main__":
+    html = get_html(
+        "upload.html",
+        cache_buster="123456",
+        upload_token="offline-token",
+        user_name="Akshay"
+    )
+    print("HTML generated successfully.")

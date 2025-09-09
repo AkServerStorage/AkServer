@@ -1,24 +1,14 @@
 # =============================================================================
-# akserver - GUI Linked Devices Module (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File: akserver_gui_connected_devices.py
-Description: Contains GUI logic for displaying and managing connected devices and active sessions.
+Description:    Contains GUI logic for displaying and managing connected devices and active sessions.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Author: AkshAy S (akserver Project)
-Version: 1.0.0
-License: akserver Custom Freemium License (See LICENSE.txt)
-
-This module provides the user interface components for:
-- Fetching and listing trusted devices from the server API.
-- Displaying currently active sessions.
-- Sending API requests to forget (remove) a trusted device.
-- Handling UI updates based on API responses.
-
-Third-party components used:
-- ttkbootstrap (MIT)
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -26,13 +16,10 @@ unless permitted by a commercial license agreement.
 
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
+
 # ------------------------------------------------------------------  Python Standard Library Imports
 
-import ssl
-import json
-import time
-import urllib
-import threading
+import ssl, json, time, urllib, threading
 
 # ------------------------------------------------------------------ Third-Party Imports
 
@@ -50,13 +37,11 @@ def display_connected_devices_ui(app, parent_frame, root_window):
     """Render connected devices UI."""
     clear_frame(parent_frame)
 
-    # Frames for Trusted Devices and Active Sessions
     app.trusted_devices_tree = ttk.Frame(parent_frame)
     app.trusted_devices_tree.pack(fill=X, padx=5, pady=5)
     app.active_sessions_tree = ttk.Frame(parent_frame)
     app.active_sessions_tree.pack(fill=X, padx=5, pady=5)
 
-    # Refresh Button & Status
     status_label = ttk.Label(parent_frame, text="Loading devices...", bootstyle=INFO)
     status_label.pack(pady=5)
     refresh_button = ttk.Button(parent_frame, text="Refresh", bootstyle=(SECONDARY, 'outline'),
@@ -71,6 +56,7 @@ def display_connected_devices_ui(app, parent_frame, root_window):
 
 
 # ------------------------------------------------------------------  Internal Helpers
+
 def _clear_devices_ui(app):
     for tree in [app.trusted_devices_tree, app.active_sessions_tree]:
         if tree:
@@ -111,7 +97,6 @@ def _update_devices_ui(app, data, status_label_ref):
     """Populate devices and active sessions UI."""
     device_type_icons = {"laptop": "💻", "phone": "📱", "default": "🖥️"}
 
-    # Trusted Devices
     tree = app.trusted_devices_tree
     clear_frame(tree)
     if data.get("trusted_devices"):
@@ -129,7 +114,6 @@ def _update_devices_ui(app, data, status_label_ref):
     else:
         ttk.Label(tree, text="No trusted devices found.", bootstyle=INFO).pack(pady=10)
 
-    # Active Sessions
     tree = app.active_sessions_tree
     clear_frame(tree)
     sessions = data.get("active_otp_sessions", [])
@@ -154,7 +138,7 @@ def _update_devices_ui(app, data, status_label_ref):
         app.set_bottom_status_message("Device list refreshed.", INFO)
 
 def _forget_device_thread(token_partial, status_label_ref, app_ref):
-    """Forget device via API."""
+    """Forget device via API and refresh UI."""
     try:
         port = CONFIG["port"]
         url = f"https://127.0.0.1:{port}/api/devices/forget"
@@ -162,9 +146,25 @@ def _forget_device_thread(token_partial, status_label_ref, app_ref):
         headers = {"Content-Type": "application/json"}
         context = ssl._create_unverified_context()
         req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
-        app_ref.root.after(0, lambda: status_label_ref.config(text=f"Forgetting {token_partial}...", bootstyle=INFO))
+
+        # Update status on main thread
+        app_ref.root.after(0, lambda: status_label_ref.config(
+            text=f"Forgetting {token_partial}...", bootstyle=INFO
+        ))
+
         with urllib.request.urlopen(req, context=context, timeout=10) as response:
             if response.status == 200:
-                app_ref.update_status_message(f"Device {token_partial} forgotten. Refreshing list...", SUCCESS)
+                # Show success message
+                app_ref.root.after(0, lambda: app_ref.set_bottom_status_message(
+                    f"Device {token_partial} forgotten. Refreshing list...", SUCCESS
+                ))
+                # Trigger automatic refresh safely on main thread
+                app_ref.root.after(100, lambda: threading.Thread(
+                    target=_fetch_devices_from_server_thread,
+                    args=(app_ref, status_label_ref, app_ref.root),
+                    daemon=True
+                ).start())
+
     except Exception as e:
         _handle_api_error(e, status_label_ref, app_ref.root, f"Error forgetting {token_partial}")
+

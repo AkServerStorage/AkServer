@@ -1,41 +1,41 @@
 # =============================================================================
-# akserver_trial.py (Production Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
-"""
-File:           akserver_trial.py
-Description:    Hardened trial/license enforcement for AkServer.
-Author:         AkshAy S (akserver Project)
-Version:        3.0.0
-License:        AkServer Proprietary
 
-Features:
-- Device-bound trial (UUID persisted)
-- Encrypted local trial record with AES-GCM
-- Server JWT token validation (authoritative)
-- Firebase weekly expiry sync
-- Offline grace period with last valid server token
-- Clock rollback and monotonic time hardening
 """
+Description:    Trial/license for AkServer.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-import os
-import time
-import uuid
-import json
-import tempfile
+Copyright © 2025 AkServer. All rights reserved.
+
+This software is proprietary and confidential.
+Redistribution, modification, or reverse engineering is strictly prohibited
+unless permitted by a commercial license agreement.
+
+For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
+"""
+# ------------------------------------------------------------------ Python Standard library
+
+import os, time, uuid, json, tempfile
 from pathlib import Path
 from typing import Optional, Dict, Any
+
+# ------------------------------------------------------------------ Third-party
 
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
+# ------------------------------------------------------------------ Local modules
+
 from akserver_config import get_or_create_secret_key, LOGGER
 from akserver_resources import db, REMOTE_DISABLED
 from akserver_trial_server_token import get_server_token_status, OFFLINE_GRACE_SECONDS
 
-# ------------------------------------------------------------------ #
-# Constants
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------ Constants
+
 APP_NAME = "AkServer"
 APPDATA_DIR = Path(os.getenv("APPDATA", Path.home())) / APP_NAME
 TRIAL_FILE = APPDATA_DIR / "trial_state.dat"
@@ -46,9 +46,8 @@ MIN_UPDATE_INTERVAL = 60
 REMOTE_REFRESH_INTERVAL = 7 * 24 * 3600
 LOCAL_DAY_CHECK_INTERVAL = 24 * 3600
 
-# ------------------------------------------------------------------ #
-# Device Binding
-# ------------------------------------------------------------------ #
+# ------------------------------------------------------------------ Functions
+
 def _get_device_id() -> str:
     device_file = Path.home() / f".{APP_NAME}_device"
     try:
@@ -71,9 +70,6 @@ def _get_device_id() -> str:
 
 DEVICE_ID = _get_device_id()
 
-# ------------------------------------------------------------------ #
-# AES-GCM Key Derivation
-# ------------------------------------------------------------------ #
 def _derive_aesgcm_key(master_key: bytes) -> bytes:
     if not isinstance(master_key, (bytes, bytearray)):
         master_key = str(master_key).encode("utf-8")
@@ -92,9 +88,6 @@ except Exception:
     LOGGER.exception("Failed to derive AES key; generating ephemeral key")
     AES_KEY = AESGCM.generate_key(bit_length=256)
 
-# ------------------------------------------------------------------ #
-# AES-GCM Helpers
-# ------------------------------------------------------------------ #
 def _aesgcm_encrypt(data: bytes) -> bytes:
     aesgcm = AESGCM(AES_KEY)
     nonce = os.urandom(12)
@@ -106,9 +99,6 @@ def _aesgcm_decrypt(encrypted: bytes) -> bytes:
     nonce, ct = encrypted[:12], encrypted[12:]
     return AESGCM(AES_KEY).decrypt(nonce, ct, None)
 
-# ------------------------------------------------------------------ #
-# File Persistence
-# ------------------------------------------------------------------ #
 def _atomic_write(path: Path, data: bytes):
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, tmp_path = tempfile.mkstemp(prefix=path.name + ".", dir=str(path.parent))
@@ -147,9 +137,6 @@ def _load_trial(path: Path) -> Optional[Dict[str, Any]]:
         LOGGER.warning(f"Failed to load trial file: {path}")
         return None
 
-# ------------------------------------------------------------------ #
-# Firebase Sync
-# ------------------------------------------------------------------ #
 def _fetch_trial_from_firebase(device_id: str) -> Optional[Dict[str, Any]]:
     if REMOTE_DISABLED:
         return None
@@ -172,15 +159,9 @@ def _update_trial_in_firebase(device_id: str, trial_data: Dict[str, Any]):
     except Exception:
         LOGGER.exception("Firebase update failed")
 
-# ------------------------------------------------------------------ #
-# Time Helpers
-# ------------------------------------------------------------------ #
 def _now() -> int: return int(time.time())
 def _monotonic() -> float: return time.monotonic()
 
-# ------------------------------------------------------------------ #
-# Trial Initialization
-# ------------------------------------------------------------------ #
 def _initialize_trial() -> Dict[str, Any]:
     trial = _load_trial(TRIAL_FILE) or _load_trial(BACKUP_TRIAL_FILE)
     now, mono = _now(), _monotonic()
@@ -195,6 +176,7 @@ def _initialize_trial() -> Dict[str, Any]:
             "last_remote_sync": 0,
             "last_seen_wall": now,
             "last_seen_mono": mono,
+            "fresh_init": True,   # 👈 NEW
         }
         _save_trial(trial)
         LOGGER.info("Initialized new trial record")
@@ -205,28 +187,40 @@ def _initialize_trial() -> Dict[str, Any]:
     trial.setdefault("last_seen_mono", mono)
     return trial
 
-# ------------------------------------------------------------------ #
-# Clock Sanity
-# ------------------------------------------------------------------ #
-def _apply_clock_sanity(trial: Dict[str, Any], now: int, mono: float) -> Dict[str, Any]:
+def _apply_clock_sanity(trial: Dict[str, Any], now: int, mono: float) -> Optional[Dict[str, Any]]:
+    """
+    Detect clock rollback or impossible jumps. If detected, mark as expired locally.
+    Skip check on first init.
+    """
+    if trial.pop("fresh_init", False): 
+        LOGGER.info("Skipping clock sanity checks (fresh init)")
+        return trial
+
     last_wall = int(trial.get("last_seen_wall", now))
     last_mono = float(trial.get("last_seen_mono", mono))
 
     if now + 300 < last_wall:
-        LOGGER.warning("Clock rollback detected — expiring trial")
-        trial["expiry_ts"] = now
-    elif mono + 1e-6 < last_mono:
-        LOGGER.warning("Monotonic anomaly — expiring trial")
-        trial["expiry_ts"] = now
+        LOGGER.warning("Clock rollback detected (>5 min) — invalidating trial locally.")
+        trial["expiry_ts"] = min(trial.get("expiry_ts", now), now)
+        trial["last_seen_wall"] = now
+        trial["last_seen_mono"] = mono
+        _save_trial(trial)
+        return trial
 
-    trial["last_seen_wall"] = now
-    trial["last_seen_mono"] = mono
-    _save_trial(trial)
+    if mono + 1e-6 < last_mono:
+        LOGGER.warning("Monotonic clock anomaly — invalidating trial locally.")
+        trial["expiry_ts"] = min(trial.get("expiry_ts", now), now)
+        trial["last_seen_wall"] = now
+        trial["last_seen_mono"] = mono
+        _save_trial(trial)
+        return trial
+
+    if (now - last_wall) >= LOCAL_DAY_CHECK_INTERVAL or (mono - last_mono) >= 0.5:
+        trial["last_seen_wall"] = now
+        trial["last_seen_mono"] = mono
+
     return trial
 
-# ------------------------------------------------------------------ #
-# Firebase Refresh
-# ------------------------------------------------------------------ #
 def _maybe_weekly_remote_refresh(trial: Dict[str, Any], now: int) -> Dict[str, Any]:
     last_sync = int(trial.get("last_remote_sync", 0))
     if now - last_sync < REMOTE_REFRESH_INTERVAL:
@@ -243,13 +237,9 @@ def _maybe_weekly_remote_refresh(trial: Dict[str, Any], now: int) -> Dict[str, A
     _save_trial(trial)
     return trial
 
-# ------------------------------------------------------------------ #
-# Public API
-# ------------------------------------------------------------------ #
 def check_trial() -> Dict[str, Any]:
     now, mono = _now(), _monotonic()
 
-    # 1. Server token (authoritative)
     try:
         server_status = get_server_token_status(DEVICE_ID)
         if server_status.get("valid"):
@@ -268,7 +258,6 @@ def check_trial() -> Dict[str, Any]:
     except Exception:
         LOGGER.exception("Server token check failed")
 
-    # 2. Local record
     trial = _initialize_trial()
     if trial.get("device_id") != DEVICE_ID:
         LOGGER.warning("Device mismatch — trial invalid")
@@ -278,19 +267,16 @@ def check_trial() -> Dict[str, Any]:
     if now >= int(trial.get("expiry_ts", now)):
         return {"active": False, "days_left": 0, "expired": True, "source": "local"}
 
-    # 3. Firebase refresh
     try:
         trial = _maybe_weekly_remote_refresh(trial, now)
     except Exception:
         LOGGER.debug("Firestore refresh skipped")
 
-    # 4. Update last_run
     if now - int(trial.get("last_run", now)) >= MIN_UPDATE_INTERVAL:
         trial["last_run"] = now
         try: _save_trial(trial)
         except Exception: LOGGER.debug("Failed to update last_run")
 
-    # Final calculation
     expiry_ts = int(trial.get("expiry_ts", now))
     days_left = max((expiry_ts - now) // 86400, 0)
     return {"active": days_left > 0, "days_left": days_left, "expired": days_left == 0, "source": "local"}

@@ -1,19 +1,14 @@
 # =============================================================================
-# akserver - SSL and Crypto Utilities (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File:           akserver_ssl_util.py
 Description:    SSL certificate generation, token signing, and crypto helpers.
-Author:         AkshAy S (akserver Project)
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        akserver Custom Freemium License (See LICENSE.txt)
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-SSL and crypto helpers that use centralized secret key & logger from akserver_config.
-
-Third-party components used:
-- cryptography (Apache 2.0): Used for X.509 certs and key generation
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -21,16 +16,10 @@ unless permitted by a commercial license agreement.
 
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
+
 # ------------------------------------------------------------------ Python Standard Library Imports
 
-import os
-import stat
-import time
-import uuid
-import hmac
-import datetime
-import hashlib
-import logging
+import os, stat, time, uuid, hmac, datetime, hashlib, logging
 from typing import Optional
 
 # ------------------------------------------------------------------ Third-party
@@ -44,7 +33,12 @@ from cryptography.x509.oid import NameOID
 
 from akserver_config import get_or_create_secret_key, LOGGER as server_logger
 
+
+# ------------------------------------------------------------------ Subdirectory Paths
+
 DEVICE_ID_FILE = os.path.expanduser("~/.akserver_device_id")
+
+# ------------------------------------------------------------------ Functions
 
 def generate_self_signed_cert(
     cert_path: str,
@@ -95,7 +89,6 @@ def generate_self_signed_cert(
         log.error(f"Failed saving certificate/key: {e}", exc_info=True)
         raise
 
-# get or create secret key (raw bytes)
 SECRET_KEY = get_or_create_secret_key()
 
 def generate_download_token(filename: str, expires_in: int = 180) -> str:
@@ -151,7 +144,7 @@ def get_or_create_device_id() -> str:
     try:
         with open(DEVICE_ID_FILE, "w") as f:
             f.write(device_id)
-        # try to make file read only & hidden (best-effort)
+
         try:
             os.chmod(DEVICE_ID_FILE, stat.S_IREAD)
         except Exception:
@@ -201,7 +194,7 @@ def handle_sensitive_path_access(handler, path):
         abs_app_path = os.path.abspath(APP_DATA_ROOT)
 
         if not os.path.abspath(potential_fs_path).startswith(abs_app_path):
-            return False  # outside our app scope → safe
+            return False
 
         relative_to_app_path = os.path.relpath(potential_fs_path, abs_app_path)
 

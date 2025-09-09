@@ -1,26 +1,14 @@
 # =============================================================================
-# akserver - GUI Settings Module (Proprietary Edition)
+# AkServer – Proprietary Software Module
 # =============================================================================
+
 """
-File: akserver_gui_settings.py
-Description: Contains GUI logic for settings, including QR code sharing, OTP generation, and custom dialogs.
+Description:    Contains GUI logic for settings, including QR code sharing, OTP generation, and custom dialogs.
+Author:         Akshay Shinde
+Version:        1.0.0
+License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Author: AkshAy S (akserver Project)
-Version: 1.0.0
-License: akserver Custom Freemium License (See LICENSE.txt)
-
-This module provides core functionality for the akserver GUI's settings page:
-- Generating a scannable QR code for easy mobile device pairing.
-- Requesting a one-time password (OTP) from the server for authentication.
-- Displaying temporary OTP codes to the user.
-- Providing a custom yes/no dialog box with consistent styling.
-
-Third-party components used:
-- ttkbootstrap (MIT)
-- Pillow (HPND)
-- qrcode (BSD)
-
-© 2025 akserver. All rights reserved.
+Copyright © 2025 AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -29,20 +17,15 @@ unless permitted by a commercial license agreement.
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
-# ------------------------------------------------------------------  Python Standard Library Imports
+# ------------------------------------------------------------------  Python Standard Library
 
-import os
-import threading
-import ssl
-import urllib.request
-import json
-import time
-from tkinter import messagebox
-from PIL import Image, ImageTk
-import qrcode
-import tkinter as tk
+import os, ssl, json, time, threading, qrcode, urllib.request
+
 # ------------------------------------------------------------------ Third-Party Imports
 
+import tkinter as tk
+from tkinter import messagebox
+from PIL import Image, ImageTk
 from ttkbootstrap.constants import WARNING, INFO
 
 # ------------------------------------------------------------------ Local Modules
@@ -84,7 +67,7 @@ def handle_generate_otp_request(app):
             app.otp_display_label_settings.config(text="Requesting OTP...", bootstyle=WARNING)
             app.otp_display_label_settings.pack(pady=(5, 0))
         except tk.TclError:
-            pass  # label might have been destroyed
+            pass
     threading.Thread(target=lambda: request_otp(app), daemon=True).start()
 
 
@@ -110,7 +93,6 @@ def request_otp(app):
                     time.sleep(0.5)
                 else:
                     raise
-        # fallback error
         app.root.after(0, lambda: messagebox.showerror("Server Offline", "Cannot request OTP, server unreachable."))
         app.root.after(0, lambda: clear_settings_otp_display(app))
     except Exception as e:
@@ -146,14 +128,11 @@ def update_settings_otp_display(app, otp_value):
             label.pack(pady=(5, 0))
         except tk.TclError:
             return
-
-    # Cancel any previous timer
     if hasattr(app, "_otp_clear_id") and app._otp_clear_id:
         try:
             app.root.after_cancel(app._otp_clear_id)
         except Exception:
             pass
 
-    # Schedule auto-clear
     app._otp_clear_id = app.root.after(10000, lambda: clear_settings_otp_display(app))
 
