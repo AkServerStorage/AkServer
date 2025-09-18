@@ -1,35 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Register Device - akserver</title>
-    <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; margin: 0; min-height: 100vh; }
-        .header-logo {
-            display: block;
-            margin: 10px auto 5px auto;
-            max-height: 40px; /* Adjust size as needed */
-        }
-        h2 { text-align: center; }
-        .container { background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); text-align: center; width: 350px; margin: 40px auto 0 auto; }
-        input[type="text"] { padding: 10px; margin-bottom: 20px; width: calc(100% - 22px); border: 1px solid #ddd; border-radius: 4px; }
-        button { background-color: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
-        button:hover { background-color: #0056b3; }
-        .message { margin-top: 15px; color: red; }
-    </style>
-</head><body>
-    <div class="container">
-        <h2>Register Your Device</h2>
-        <img src="/static/akserver_logo.png" alt="akserver Logo" class="header-logo">
-        <p>Please enter a name for this device. This name will help you identify it later.</p>
-        <form action="/submit_device_name" method="post" autocomplete="off">
-            <input type="text" name="device_name" placeholder="Enter Device Name (e.g., My Phone)" maxlength="50" required autofocus><br>
-            <button type="submit">Save Device Name</button>
-        </form>
-        {{message_placeholder}}
-        <div style="text-align: center; margin-top: 30px; font-size: 0.8em; color: #777;">
-            © 2025 akserver. All rights reserved.
-        </div>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Register Device - akserver</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    .header-logo {
+      display: block;
+      margin: 10px auto 5px auto;
+      max-height: 40px;
+      /* Adjust size as needed */
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .container {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      width: 350px;
+      margin: 40px auto 0 auto;
+    }
+
+    input[type="text"] {
+      padding: 10px;
+      margin-bottom: 20px;
+      width: calc(100% - 22px);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    .message {
+      margin-top: 15px;
+      color: red;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Register Your Device</h2>
+    <img src="/static/akserver_logo.png" alt="akserver Logo" class="header-logo">
+    <p>Please enter a name for this device. This name will help you identify it later.</p>
+    <form action="/submit_device_name" method="post" autocomplete="off">
+      <input type="text" name="device_name" placeholder="Enter Device Name (e.g., My Phone)" maxlength="50" required autofocus><br>
+      <button type="submit">Save Device Name</button>
+    </form>
+    {{message_placeholder}}
+
+    <div style="text-align: center; margin-top: 30px; font-size: 0.8em; color: #777;">
+      © {{ current_year }} AkServer. All rights reserved.
     </div>
-</body></html>
+  </div>
+
+ 
+</body>
+
+</html>
