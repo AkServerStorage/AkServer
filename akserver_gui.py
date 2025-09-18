@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -20,7 +20,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ------------------------------------------------------------------ Python Standard library
 
-import os, sys, threading, time, ctypes, webbrowser, ssl, urllib.request, pystray, qrcode
+import os, sys, threading, time, ctypes, webbrowser, ssl, urllib.request, pystray, qrcode, subprocess, psutil
 
 # ------------------------------------------------------------------ Third-party
 
@@ -50,7 +50,7 @@ FEEDBACK_URL = "https://akserverstorage.github.io/akserver_announcement/akserver
 
 # ------------------------------------------------------------------ For linking main server file 
 
-SERVER_SCRIPT_NAME = "akserver.py"
+SERVER_SCRIPT_NAME =  "akserver.py"
 
 # ------------------------------------------------------------------ Subdirectory Paths
 
@@ -58,7 +58,7 @@ AUTH_ENABLED_FOR_SERVER = True
 timestamp = int(time.time())
 current_gui_save_dir = CONFIG["save_dir"]
 STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
-
+current_year = time.strftime("%Y")
 # ------------------------------------------------------------------ GLobal config
 
 FONT_HEADER = ("Helvetica", 18, "bold")
@@ -89,20 +89,67 @@ def resource_path(relative_path):
     
     return os.path.join(static_path, relative_path)
 
+# ------------------------------------------------------------------ Wifi Check
+
+startupinfo = None
+creationflags = 0
+if sys.platform == "win32":
+    startupinfo = subprocess.STARTUPINFO()
+    startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+    creationflags = subprocess.CREATE_NO_WINDOW
+
+def is_wifi_enabled():
+    """Check if Wi-Fi adapter is enabled on Windows."""
+    try:
+        result = subprocess.run(
+            ["netsh", "wlan", "show", "interfaces"],
+            capture_output=True,
+            text=True,
+            check=True,
+            startupinfo=startupinfo,
+            creationflags=creationflags 
+        )
+        return "radio status" in result.stdout.lower() and "hardware on" in result.stdout.lower()
+    except subprocess.CalledProcessError:
+        return any(
+            ("wi" in iface.lower() or "wlan" in iface.lower() or "wireless" in iface.lower()) and stats.isup
+            for iface, stats in psutil.net_if_stats().items()
+        )
+
+def is_wifi_connected():
+    """Return SSID if Wi-Fi is connected, else None (Windows only)."""
+    try:
+        result = subprocess.run(
+            ["netsh", "wlan", "show", "interfaces"],
+            capture_output=True,
+            text=True,
+            check=True,
+            startupinfo=startupinfo,
+            creationflags=creationflags 
+        )
+        output = result.stdout
+        for line in output.splitlines():
+            if "State" in line and "connected" in line.lower():
+                for l in output.splitlines():
+                    if "SSID" in l and "BSSID" not in l:
+                        return l.split(":", 1)[1].strip()
+                return "Unknown SSID"
+        return None
+    except subprocess.CalledProcessError:
+        return None
+    
 # ------------------------------------------------------------------ Main - UI
 
 def display_main_app_ui(app, parent_frame, root_window):
     """Display the main application UI and update server + trial status."""
 
- 
-    from akserver import is_wifi_enabled, is_wifi_connected
     if is_wifi_enabled():
         ssid = is_wifi_connected()
         if ssid:
             app.parent_frame = parent_frame
             app.show_wifi_status_overlay()
             return
-    
+
     trial_status = check_trial()
     if not trial_status["active"]:
         app.parent_frame = parent_frame
@@ -158,6 +205,7 @@ def display_main_app_ui(app, parent_frame, root_window):
             if app.server_button["text"] == "Start Server"
             else stop_server_logic(app)
         ),
+        takefocus=0
     )
     app.server_button.pack(pady=(0, 5), fill=X, expand=True)
 
@@ -173,6 +221,7 @@ def display_main_app_ui(app, parent_frame, root_window):
         width=button_common_width,
         padding=button_height_padding,
         command=lambda: display_connected_devices_ui(app, parent_frame, root_window),
+        takefocus=0
     ).pack(pady=(5, 0), fill=X, expand=True)
 
     ttk.Button(
@@ -182,6 +231,7 @@ def display_main_app_ui(app, parent_frame, root_window):
         width=button_common_width,
         padding=button_height_padding,
         command=lambda: display_settings_ui(app, parent_frame, root_window),
+        takefocus=0
     ).pack(pady=(0, 5), fill=X, expand=True)
     ttk.Button(
         right_button_column,
@@ -189,7 +239,8 @@ def display_main_app_ui(app, parent_frame, root_window):
         bootstyle=(SECONDARY, OUTLINE),
         width=button_common_width,
         padding=button_height_padding,
-        command=lambda: display_about_ui(app, parent_frame, root_window), #webbrowser.open(FEEDBACK_URL),
+        command=lambda: display_about_ui(app, parent_frame, root_window),
+        takefocus=0
     ).pack(pady=(5, 0), fill=X, expand=True)
 
     app.root.after(50, lambda: update_main_status(app))
@@ -221,7 +272,7 @@ def update_main_status(app):
             app.server_button.config(state="disabled")
 
     combined_text = f"{server_text} | {trial_text}"
-    
+        
     combined_color = DANGER if not trial_active else server_color
     app.set_bottom_status_message(combined_text, combined_color)
 
@@ -240,22 +291,31 @@ def display_settings_ui(app, parent_frame, root_window):
         top_frame,
         text="⬅",
         bootstyle="info",
-        command=lambda: app.root.after(50, lambda: display_main_app_ui(app, parent_frame, root_window))
+        command=lambda: app.root.after(50, lambda: display_main_app_ui(app, parent_frame, root_window)),
+        takefocus=0
     )
     back_button.pack(side=LEFT)
     add_bootstyle_hover(back_button, normal="info", hover="primary")
+
+    warning_label = ttk.Label(
+        top_frame,
+        text="Browser may warn — choose Advanced → Proceed (safe on local network).",
+        font=("Helvetica", 8, "italic"),
+        foreground="gray"
+    )
 
 
     def show_qr_and_otp():
         connect_button.pack_forget()
         qr_frame.pack(pady=(5, 0), fill=X, padx=15)
         otp_frame.pack(pady=5, fill=X, padx=15)
-
+        warning_label.place(relx=0.5, rely=0.5, anchor="center")
     connect_button = ttk.Button(
         parent_frame,
         text="Add Device",
         bootstyle="primary",
-        command=show_qr_and_otp
+        command=show_qr_and_otp,
+        takefocus=0
     )
     connect_button.pack(pady=(5, 10))
     add_bootstyle_hover(connect_button, normal="primary", hover="success")
@@ -280,7 +340,8 @@ def display_settings_ui(app, parent_frame, root_window):
         otp_frame,
         text="Generate Code",
         bootstyle="Primary",
-        command=lambda: handle_generate_otp_request(app)
+        command=lambda: handle_generate_otp_request(app),
+        takefocus=0
     )
     if AUTH_ENABLED_FOR_SERVER:
         app.generate_otp_button_settings.pack()
@@ -314,7 +375,7 @@ def display_settings_ui(app, parent_frame, root_window):
     ttk.Label(folder_frame, textvariable=folder_var, wraplength=300, anchor=W).pack(
         side=LEFT, padx=(0, 5), fill=X, expand=True
     )
-    select_btn = ttk.Button(folder_frame, text="Select Path", bootstyle="secondary", command=choose_folder)
+    select_btn = ttk.Button(folder_frame, text="Select Path", bootstyle="secondary", command=choose_folder,takefocus=0)
     select_btn.pack(side=LEFT, padx=5)
     add_hover_effect(back_button, "info", "primary")
     add_hover_effect(connect_button, "primary", "info") 
@@ -342,7 +403,8 @@ def display_connected_devices_ui(app, parent_frame, root_window):
         top_bar,
         text="⬅",
         bootstyle="info",
-        command=lambda: display_main_app_ui(app, parent_frame, root_window)
+        command=lambda: display_main_app_ui(app, parent_frame, root_window),
+        takefocus=0
     )
     back_button.grid(row=0, column=0, sticky="w")
     add_bootstyle_hover(back_button, normal="info", hover="primary")
@@ -356,7 +418,8 @@ def display_connected_devices_ui(app, parent_frame, root_window):
             target=_fetch_devices_from_server_thread,
             args=(app, local_status_label_devices, root_window, refresh_button),
             daemon=True
-        ).start()
+        ).start(),
+        takefocus=0
     )
     refresh_button.grid(row=0, column=2, sticky="e")
 
@@ -408,7 +471,6 @@ def display_connected_devices_ui(app, parent_frame, root_window):
         lambda e: app.active_sessions_canvas.itemconfig(app.active_sessions_window_id, width=e.width)
     )
 
-
     threading.Thread(
         target=_fetch_devices_from_server_thread,
         args=(app, local_status_label_devices, root_window, refresh_button),
@@ -430,14 +492,15 @@ def display_about_ui(app, parent_frame, root_window):
         command=lambda: app.root.after(
             50, lambda: display_main_app_ui(app, parent_frame, root_window)
         ),
+        takefocus=0
     )
     back_button.pack(side=LEFT, padx=(5,0))
     add_bootstyle_hover(back_button, normal="info", hover="primary")
 
     title_label = ttk.Label(top_frame, text="AkServer v1.0.0", font=("Segoe UI",14,"bold"))
-    title_label.place(relx=0.5, rely=0, anchor='n')  
+    title_label.place(relx=0.5, rely=0, anchor='n')
 
-    ttk.Label(parent_frame, text="© 2025 AkServer Storage — All rights reserved",
+    ttk.Label(parent_frame, text=f"© {current_year} AkServer — All rights reserved",
               font=("Segoe UI",9), foreground="gray").pack(pady=(0,15))
 
     content_frame = ttk.Frame(parent_frame)
@@ -457,9 +520,9 @@ def display_about_ui(app, parent_frame, root_window):
               font=("Segoe UI",9), foreground="gray", justify="center").pack(pady=(0,15))
 
     links_row = ttk.Frame(content_frame)
-    links_row.pack(pady=(0,5))
+    links_row.pack(pady=(0,8))
 
-    def add_clickable_label(parent, text, url):
+    def add_clickable_label(parent, text, url, command=None):
         label = ttk.Label(
             parent,
             text=text,
@@ -467,7 +530,11 @@ def display_about_ui(app, parent_frame, root_window):
             cursor="hand2",
             font=("Segoe UI", 10, "underline")
         )
-        label.bind("<Button-1>", lambda e: webbrowser.open(url))
+
+        if command:
+            label.bind("<Button-1>", lambda e: command())
+        else:
+            label.bind("<Button-1>", lambda e: webbrowser.open(url))
 
         def on_enter(e):
             label.configure(foreground="blue")
@@ -478,37 +545,64 @@ def display_about_ui(app, parent_frame, root_window):
 
         return label
 
-    license_label = add_clickable_label(links_row, "Licenses & Privacy Policy", "#")
-    license_label.bind("<Button-1>", lambda e: LicensesWindow(root_window))
-    license_label.pack(side=LEFT, padx=20)
-
-    website_label = add_clickable_label(links_row, "Website", "https://akserverstorage.github.io/akserver-website/")
-    website_label.pack(side=LEFT, padx=20)
+    license_label = add_clickable_label(links_row, "Licenses & Privacy Policy", "#", command=lambda: LicensesWindow(root_window))
+    license_label.pack(side=LEFT, padx=15)
 
     email_address = "akserverstorage@gmail.com"
     mailto_link = f"mailto:{email_address}?subject=Support%20Request&body=Hello%20AkServer%20Team,"
-    email_label = add_clickable_label(content_frame, email_address, mailto_link)
-    email_label.configure(wraplength=300)
-    email_label.pack(pady=(0,15))
+    email_label = add_clickable_label(links_row, email_address, mailto_link)
+    email_label.pack(side=LEFT, padx=15)
 
     social_frame = ttk.Frame(content_frame)
-    social_frame.pack()
+    social_frame.pack(pady=(5,10))
 
-    def add_icon_link(parent, img_path, url):
+    def add_icon_link(parent, img_path, url, size):
         try:
-            img = Image.open(os.path.join(STATIC_DIR,img_path))
-            img = img.resize((32,32), Image.LANCZOS)
+            img = Image.open(os.path.join(STATIC_DIR, img_path))
+            img = img.resize((size, size), Image.LANCZOS)
             icon = ImageTk.PhotoImage(img)
-            btn = ttk.Label(parent,image=icon,cursor="hand2")
+
+            btn = ttk.Label(parent, image=icon, cursor="hand2")
             btn.image = icon
-            btn.pack(side=LEFT, padx=10)
+            btn.pack(side=LEFT, padx=15)
             btn.bind("<Button-1>", lambda e: open_url(url))
+
+            def on_enter(e):
+                btn.configure(style="Hover.TLabel")
+            def on_leave(e):
+                btn.configure(style="TLabel")
+
+            btn.bind("<Enter>", on_enter)
+            btn.bind("<Leave>", on_leave)
+
         except Exception as e:
             print(f"[WARN] Icon not loaded: {img_path} → {e}")
 
-    add_icon_link(social_frame, "Instagram_Glyph_Gradient.png", "https://www.instagram.com/akserverstorage/")
-    add_icon_link(social_frame, "x-logo.png", "https://x.com/akserverstorage")
-    
+    add_icon_link(social_frame, "akserver_logo.png", "https://akserverstorage.github.io/akserver-website/", 38)
+    add_icon_link(social_frame, "Instagram_Glyph_Gradient.png", "https://www.instagram.com/akserverstorage/", 34)
+    add_icon_link(social_frame, "x-logo.png", "https://x.com/akserverstorage", 34)
+
+    bottom_frame = ttk.Frame(parent_frame)
+    bottom_frame.pack(side=BOTTOM, fill=X, pady=(5,8), padx=12)
+
+    more_info_label = ttk.Label(
+        bottom_frame,
+        text="More Info →",
+        foreground="",
+        cursor="hand2",
+        font=("Segoe UI", 9, "bold")
+    )
+    more_info_label.pack(side=RIGHT)
+
+    def on_enter(e):
+        more_info_label.configure(foreground="blue")
+    def on_leave(e):
+        more_info_label.configure(foreground="darkblue")
+
+    more_info_label.bind("<Enter>", on_enter)
+    more_info_label.bind("<Leave>", on_leave)
+    more_info_label.bind("<Button-1>", lambda e: open_url("https://akserverstorage.github.io/akserver-website/info.html"))
+
 # ------------------------------------------------------------------ GUI Application Class
 
 class akserverGUI:
@@ -533,6 +627,7 @@ class akserverGUI:
         self.root.protocol("WM_DELETE_WINDOW", self.on_closing)
 
     # ------------------------------------------------------------------ UI Variables
+
     def _init_ui_variables(self):
         self.server_button = None
         self.server_status_label = None
@@ -544,6 +639,7 @@ class akserverGUI:
         self.BUTTON_COLORS = {"start": SUCCESS, "stop": DANGER}
 
     # ------------------------------------------------------------------ Window Helpers
+
     def _center_window(self, width, height):
         screen_width = self.root.winfo_screenwidth()
         screen_height = self.root.winfo_screenheight()
@@ -552,6 +648,7 @@ class akserverGUI:
         self.root.geometry(f"{width}x{height}+{x}+{y}")
 
     # ------------------------------------------------------------------ Splash Screen
+
     def _show_splash_screen(self, duration=2000):
         self.splash = tk.Toplevel()
         self.splash.overrideredirect(True)
@@ -602,6 +699,7 @@ class akserverGUI:
         self._set_app_icon()
 
     # ------------------------------------------------------------------ Main UI
+
     def _setup_ui(self):
         self._trial_banner_frame = ttk.Frame(self.root)
         self._trial_banner_frame.pack(side="top", fill=X)
@@ -609,10 +707,9 @@ class akserverGUI:
         self.content_frame = ttk.Frame(self.root, padding=20)
         self.content_frame.pack(fill=BOTH, expand=True)
 
-        current_year = time.strftime("%Y")
         ttk.Label(
             self.root,
-            text=f"© {current_year} akserver. All rights reserved.",
+            text=f"© {current_year} AkServer. All rights reserved.",
             font=("Helvetica", 8),
             bootstyle=SECONDARY,
             anchor="center"
@@ -644,10 +741,16 @@ class akserverGUI:
         self.root.after(2000, self.periodic_status_check)
 
     # ------------------------------------------------------------------ Trial
+
     def get_trial_status(self):
         return check_trial()
 
     def _update_trial_ui(self):
+
+        if is_wifi_enabled() and is_wifi_connected():
+            self.set_bottom_status_message("Server Offline | Trial active | Offline", DANGER)
+            return
+
         trial_info = self.get_trial_status()
         trial_active = trial_info.get("active", True)
         days_left = trial_info.get("days_left", 0)
@@ -692,26 +795,17 @@ class akserverGUI:
         self.current_overlay = card
 
     # ------------------------------------------------------------------ Periodic Update
+
     def periodic_status_check(self):
         if not self.root.winfo_exists():
             return
         try:
-            from akserver import is_wifi_enabled
-            if not is_wifi_enabled():
-                self.show_wifi_status_overlay()
-            else:
-                if getattr(self, "wifi_current_overlay", None) and self.wifi_current_overlay.winfo_exists():
-                    try:
-                        self.wifi_current_overlay.destroy()
-                    except Exception:
-                        pass
-                    self.wifi_current_overlay = None
-                    display_main_app_ui(self, self.parent_frame or self.content_frame, self.root)
             self._update_trial_ui()
         finally:
             self.root.after(5000, self.periodic_status_check)
 
     # ------------------------------------------------------------------ App Icon
+
     def _set_app_icon(self):
         try:
             icon_path_ico = resource_path("akserver_icon.ico")
@@ -736,9 +830,9 @@ class akserverGUI:
     def set_bottom_status_message(self, message, style=None):
         if self.server_status_label and self.server_status_label.winfo_exists():
             self.server_status_label.config(text=message, bootstyle=style or "secondary")
-            self.server_status_label.update_idletasks()
 
     # ------------------------------------------------------------------ Tray
+    
     def create_tray_icon(self):
         def show_window(icon, item):
             self.root.after(0, self.root.deiconify)
@@ -762,19 +856,25 @@ class akserverGUI:
         pystray.Icon("akserver", image, "akserver", menu).run()
 
     # ------------------------------------------------------------------ Window Close
+
     def on_closing(self):
+        """Minimizes the window to the system tray."""
         self.root.withdraw()
-        if not hasattr(self, "tray_thread") or not self.tray_thread.is_alive():
-            self.tray_thread = threading.Thread(target=self.create_tray_icon, daemon=True)
-            self.tray_thread.start()
+        threading.Thread(target=self.create_tray_icon, daemon=True).start()
 
     # ------------------------------------------------------------------ Run
+
     def run(self):
         start_server_logic(self)
         self.root.mainloop()
 
+    startupinfo = None
+    creationflags = 0
+    if sys.platform == "win32":
+        startupinfo = subprocess.STARTUPINFO()
+        startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+        creationflags = subprocess.CREATE_NO_WINDOW
 
-    # ------------------------------------------------------------------ wifi checking
     def show_wifi_status_overlay(self):
         """Show a centered overlay that blocks the UI while Wi-Fi is not available."""
         
@@ -819,12 +919,11 @@ class akserverGUI:
                     self.set_bottom_status_message("Cannot open Network Settings.", DANGER)
 
             ttk.Button(card, text="Open Network Settings", bootstyle="secondary", command=open_net_settings).pack(pady=(2, 0))
-
+            
         self.wifi_current_overlay = card
 
     def _check_wifi_and_update(self):
         """Immediate check called by Retry button or other events."""
-        from akserver import is_wifi_enabled
 
         if is_wifi_enabled():
             if getattr(self, "wifi_current_overlay", None) and self.wifi_current_overlay.winfo_exists():
@@ -839,8 +938,8 @@ class akserverGUI:
         else:
             self.set_bottom_status_message("No Wi-Fi detected. Still offline.", DANGER)
 
-
 # ------------------------------------------------------------------ Entry Point
+
 if __name__ == "__main__":
     start_in_tray = "--tray-start" in sys.argv
     app = akserverGUI(start_in_tray=start_in_tray)

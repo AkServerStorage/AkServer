@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -70,47 +70,6 @@ for path in (APP_DATA_ROOT, SERVER_DATA_PATH, LOG_DIR):
         path.mkdir(parents=True, exist_ok=True)
     except Exception:
         pass
-
-
-import subprocess
-import psutil
-
-def is_wifi_enabled():
-    """Check if Wi-Fi adapter is enabled on Windows."""
-    try:
-        result = subprocess.run(
-            ["netsh", "wlan", "show", "interfaces"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        return "radio status" in result.stdout.lower() and "hardware on" in result.stdout.lower()
-    except subprocess.CalledProcessError:
-        return any(
-            ("wi" in iface.lower() or "wlan" in iface.lower() or "wireless" in iface.lower()) and stats.isup
-            for iface, stats in psutil.net_if_stats().items()
-        )
-
-def is_wifi_connected():
-    """Return SSID if Wi-Fi is connected, else None (Windows only)."""
-    try:
-        result = subprocess.run(
-            ["netsh", "wlan", "show", "interfaces"],
-            capture_output=True,
-            text=True,
-            check=True
-        )
-        output = result.stdout
-        for line in output.splitlines():
-            if "State" in line and "connected" in line.lower():
-                # look for SSID too
-                for l in output.splitlines():
-                    if "SSID" in l and "BSSID" not in l:
-                        return l.split(":", 1)[1].strip()
-                return "Unknown SSID"
-        return None
-    except subprocess.CalledProcessError:
-        return None
 
 # ------------------------------------------------------------------ Global rate limiter
 class RateLimiter:
@@ -392,6 +351,7 @@ def run_server(port: int, save_dir: str | Path, auth_enabled_str: str) -> None:
         context.load_cert_chain(certfile=str(SSL_CERT_FILE), keyfile=str(SSL_KEY_FILE))
 
         httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
+        server_logger.info(f"Server binding to 0.0.0.0:{port}")
         server_logger.info("AkServer running")
         httpd.serve_forever()
     except KeyboardInterrupt:
@@ -410,18 +370,6 @@ def run_server(port: int, save_dir: str | Path, auth_enabled_str: str) -> None:
 
 # ------------------------------------------------------------------ Main entry
 if __name__ == "__main__":
-    
-    if is_wifi_enabled():
-        ssid = is_wifi_connected()
-        if ssid:
-            print(f"Not Connected to Wi-Fi network")
-            sys.exit(1)
-        else:
-            print("Wi-Fi connected to network.")
-    else:
-        print("Wi-Fi connected to any network.")
-        
-            
     load_config()
     PORT = int(CONFIG.get("port", PORT))
     akserver_SAVE_DIR = Path(CONFIG.get("save_dir") or DEFAULT_SAVE_DIR_SERVER)
@@ -435,6 +383,7 @@ if __name__ == "__main__":
     else:
         server_logger.warning("Trial active. Days left: %d", trial_status["days_left"])
 
+    # Single-instance lock
     lock_file_path = APP_DATA_ROOT / "akserver.lock"
     lock_fd = None
     try:

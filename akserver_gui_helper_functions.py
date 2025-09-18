@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -141,14 +141,13 @@ class LicensesWindow(tk.Toplevel):
         self.font_family = ("Segoe UI", 10)
         self.mono_font = ("Consolas", 10)
 
-        # --- Set window icon ---
-        icon_path = os.path.join(STATIC_DIR, "akserver_icon.ico")  # Add the filename!
+        icon_path = os.path.join(STATIC_DIR, "akserver_icon.ico")
         if os.path.exists(icon_path):
             try:
                 icon_img = Image.open(icon_path)
                 icon_img = ImageTk.PhotoImage(icon_img)
-                self.iconphoto(False, icon_img)  # Set icon for window
-                self._icon_img_ref = icon_img  # keep reference to avoid GC
+                self.iconphoto(False, icon_img)
+                self._icon_img_ref = icon_img
             except Exception as e:
                 print(f"[WARN] Could not set window icon: {e}")
         else:

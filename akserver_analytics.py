@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -28,7 +28,6 @@ import pyautogui
 
 from akserver_trusted_device_manager import get_current_trusted_device_count
 
-
 # ------------------------------------------------------------------ Subdirectory Paths
 
 analytics_logger = logging.getLogger(__name__)
@@ -36,7 +35,6 @@ DEVICE_INFO_FILE = os.path.join(
     os.getenv("APPDATA", os.path.expanduser("~")),
     "akserver_device_info.json"
 )
-
 
 # ------------------------------------------------------------------ functions
 
@@ -142,11 +140,11 @@ def send_usage_to_google_form(data):
         analytics_logger.error("Error sending usage data: Request timed out.")
         return False
     except requests.exceptions.ConnectionError as e:
-        analytics_logger.error(f"Error sending usage data: Connection error")
+        analytics_logger.error(f"Error sending usage data: Connection error - {e}")
         return False
     except Exception as e:
         analytics_logger.exception(
-            f"An unexpected error occurred while sending usage data"
+            f"An unexpected error occurred while sending usage data: {e}"
         )
         return False
 
@@ -201,7 +199,7 @@ def get_and_send_analytics_data():
         TRUSTED_DEVICES_PATH, analytics_logger
     )
 
-    analytics_logger.info(f"[📊] Trusted Device Count: {device_count}")
+    analytics_logger.info(f"Trusted Device Count: {device_count}")
 
     data_payload = {
         "device_id": persistent_device_id,

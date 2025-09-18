@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -29,31 +29,7 @@ from ttkbootstrap.constants import INFO, SUCCESS, DANGER, LEFT, RIGHT, X, SOLID,
 # ------------------------------------------------------------------ Local Modules
 
 from akserver_gui_helper_functions import _handle_api_error, clear_frame
-from akserver_config import CONFIG
-
-# ------------------------------------------------------------------  Device UI Logic
-
-def display_connected_devices_ui(app, parent_frame, root_window):
-    """Render connected devices UI."""
-    clear_frame(parent_frame)
-
-    app.trusted_devices_tree = ttk.Frame(parent_frame)
-    app.trusted_devices_tree.pack(fill=X, padx=5, pady=5)
-    app.active_sessions_tree = ttk.Frame(parent_frame)
-    app.active_sessions_tree.pack(fill=X, padx=5, pady=5)
-
-    status_label = ttk.Label(parent_frame, text="Loading devices...", bootstyle=INFO)
-    status_label.pack(pady=5)
-    refresh_button = ttk.Button(parent_frame, text="Refresh", bootstyle=(SECONDARY, 'outline'),
-                                command=lambda: threading.Thread(
-                                    target=_fetch_devices_from_server_thread,
-                                    args=(app, status_label, root_window, refresh_button),
-                                    daemon=True).start())
-    refresh_button.pack(pady=5)
-
-    threading.Thread(target=_fetch_devices_from_server_thread,
-                     args=(app, status_label, root_window), daemon=True).start()
-
+from akserver_config import CONFIG, LOGGER as server_logger
 
 # ------------------------------------------------------------------  Internal Helpers
 
@@ -81,6 +57,7 @@ def _fetch_devices_from_server_thread(app, status_label_ref, root_window_ref, re
         with urllib.request.urlopen(req, context=context, timeout=10) as response:
             if response.status == 200:
                 data = json.loads(response.read().decode())
+                server_logger.debug(f"API Response: {json.dumps(data, indent=2)}") 
                 root_window_ref.after(0, lambda d=data: _update_devices_ui(app, d, status_label_ref))
                 app.last_updated_time = time.strftime("%I:%M %p")
                 msg = "Device list updated." if data.get("trusted_devices") or data.get("active_otp_sessions") else "No connected devices found."
@@ -108,8 +85,9 @@ def _update_devices_ui(app, data, status_label_ref):
             frame.pack(fill=X, pady=2, padx=2)
             ttk.Label(frame, text=f"{icon} {name}", font=("Helvetica", 12)).pack(side=LEFT, padx=5)
             ttk.Button(frame, text="Forget", bootstyle=DANGER,
-                       command=lambda tp=token: threading.Thread(
-                           target=_forget_device_thread, args=(tp, status_label_ref, app), daemon=True).start()
+                       command=lambda tp=token, df=frame: threading.Thread(
+                           target=_forget_device_thread, args=(tp, status_label_ref, app, df), daemon=True).start(),
+                           takefocus=0
                        ).pack(side=RIGHT, padx=5)
     else:
         ttk.Label(tree, text="No trusted devices found.", bootstyle=INFO).pack(pady=10)
@@ -137,8 +115,8 @@ def _update_devices_ui(app, data, status_label_ref):
     if hasattr(app, "set_bottom_status_message"):
         app.set_bottom_status_message("Device list refreshed.", INFO)
 
-def _forget_device_thread(token_partial, status_label_ref, app_ref):
-    """Forget device via API and refresh UI."""
+def _forget_device_thread(token_partial, status_label_ref, app_ref, device_frame):
+    """Forget device via API."""
     try:
         port = CONFIG["port"]
         url = f"https://127.0.0.1:{port}/api/devices/forget"
@@ -146,25 +124,16 @@ def _forget_device_thread(token_partial, status_label_ref, app_ref):
         headers = {"Content-Type": "application/json"}
         context = ssl._create_unverified_context()
         req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
-
-        # Update status on main thread
-        app_ref.root.after(0, lambda: status_label_ref.config(
-            text=f"Forgetting {token_partial}...", bootstyle=INFO
-        ))
-
+        app_ref.root.after(0, lambda: status_label_ref.config(text=f"Forgetting {token_partial}...", bootstyle=INFO))
         with urllib.request.urlopen(req, context=context, timeout=10) as response:
             if response.status == 200:
-                # Show success message
-                app_ref.root.after(0, lambda: app_ref.set_bottom_status_message(
-                    f"Device {token_partial} forgotten. Refreshing list...", SUCCESS
-                ))
-                # Trigger automatic refresh safely on main thread
-                app_ref.root.after(100, lambda: threading.Thread(
+                app_ref.root.after(0, lambda: device_frame.destroy())
+                app_ref.root.after(1000, lambda: threading.Thread(
                     target=_fetch_devices_from_server_thread,
                     args=(app_ref, status_label_ref, app_ref.root),
                     daemon=True
                 ).start())
-
+                if hasattr(app_ref, "set_bottom_status_message"):
+                    app_ref.set_bottom_status_message(f"Device {token_partial} forgotten", SUCCESS)
     except Exception as e:
-        _handle_api_error(e, status_label_ref, app_ref.root, f"Error forgetting {token_partial}")
-
+        server_logger.error(f"Error forgetting {token_partial}: {e}")

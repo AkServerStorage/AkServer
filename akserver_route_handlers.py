@@ -7,7 +7,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-© 2025 akserver. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -18,7 +18,7 @@ For license terms, visit: https://akserverstorage.github.io/akserver_announcemen
 
 # ------------------------------------------------------------------ Python Standard Library Imports
 
-import mimetypes, os, platform, re, shutil, time, unicodedata
+import mimetypes, os, sys, platform, re, shutil, time, unicodedata
 
 # ------------------------------------------------------------------ Local Module Imports
 
@@ -40,7 +40,14 @@ _windows_device_files = {
     *(f"LPT{i}" for i in range(10)),
 }
 
-BUNDLED_FILES_PATH = os.path.join(os.path.dirname(__file__), "static")
+def get_static_dir():
+    try:
+        base_path = sys._MEIPASS
+    except AttributeError:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_path, "static")
+
+BUNDLED_FILES_PATH = get_static_dir()
 
 EXT_COLOR_MAP = {
     ".pdf": "#d32f2f", 

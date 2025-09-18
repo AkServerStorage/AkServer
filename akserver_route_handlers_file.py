@@ -7,7 +7,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-© 2025 akserver. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -539,11 +539,10 @@ def handle_get_file(handler):
                 retry_count = 0
                 max_retries = 10
                 chunk_size = 8 * 1024
+                total_bytes = 0
                 if range_header:
                     f.seek(start)
                     remaining = content_length
-                    sent_bytes = 0
-
                     while remaining > 0:
                         chunk = f.read(min(chunk_size, remaining))
                         if not chunk:
@@ -551,16 +550,11 @@ def handle_get_file(handler):
                                 f"Unexpected end of file: {file_path}"
                             )
                             break
-
                         try:
                             handler.wfile.write(chunk)
                             handler.wfile.flush()
                             remaining -= len(chunk)
-                            sent_bytes += len(chunk)
-                            handler.server_logger.debug(
-                                f"Sent {len(chunk)} bytes, remaining: {remaining}"
-                            )
-
+                            total_bytes += len(chunk)
                         except (
                             ConnectionResetError,
                             ConnectionAbortedError,
@@ -569,7 +563,7 @@ def handle_get_file(handler):
                             BrokenPipeError,
                         ) as e:
                             handler.server_logger.warning(
-                                f"Connection error while streaming {file_path} at offset {sent_bytes}: {e}"
+                                f"Connection error while streaming {file_path} at offset {total_bytes}: {e}"
                             )
                             if hasattr(e, "errno") and e.errno in (10053, 10054):
                                 handler.server_logger.warning(
@@ -586,10 +580,7 @@ def handle_get_file(handler):
                                     f"Socket closed by client for {file_path}, exiting stream."
                                 )
                                 return
-                            if (
-                                retry_count < max_retries
-                                and handler.connection.fileno() != -1
-                            ):
+                            if retry_count < max_retries and handler.connection.fileno() != -1:
                                 retry_count += 1
                                 time.sleep(2 * retry_count)
                                 continue
@@ -597,13 +588,12 @@ def handle_get_file(handler):
                                 f"Max retries reached for {file_path}"
                             )
                             return
-
                         except socket.timeout:
                             handler.server_logger.warning(
                                 f"Socket timeout while streaming {file_path}"
                             )
                             return
-
+                    handler.server_logger.debug(f"Sent total {total_bytes} bytes for {file_path}")
                 else:
                     while True:
                         chunk = f.read(chunk_size)
@@ -612,7 +602,7 @@ def handle_get_file(handler):
                         try:
                             handler.wfile.write(chunk)
                             handler.wfile.flush()
-                            handler.server_logger.debug(f"Sent {len(chunk)} bytes")
+                            total_bytes += len(chunk)
                             retry_count = 0
                         except (
                             ConnectionResetError,
@@ -624,10 +614,7 @@ def handle_get_file(handler):
                             handler.server_logger.warning(
                                 f"Connection error while streaming {file_path}: {e}"
                             )
-                            if (
-                                retry_count < max_retries
-                                and handler.connection.fileno() != -1
-                            ):
+                            if retry_count < max_retries and handler.connection.fileno() != -1:
                                 retry_count += 1
                                 handler.server_logger.debug(
                                     f"Retrying ({retry_count}/{max_retries}) after error"
@@ -643,6 +630,7 @@ def handle_get_file(handler):
                                 f"[Timeout] Streaming interrupted for: {file_path}"
                             )
                             return
+                    handler.server_logger.debug(f"Sent total {total_bytes} bytes for {file_path}")
         finally:
             if hasattr(handler, "connection") and handler.connection:
                 handler.connection.settimeout(None)

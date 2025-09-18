@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -16,50 +16,39 @@ unless permitted by a commercial license agreement.
 
 For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
-
-# ------------------------------------------------------------------ Python Standard library
-
 import os
-
-# ------------------------------------------------------------------ Third-party
-
+import json
+import sys
 import firebase_admin
 from firebase_admin import credentials, firestore
 from cryptography.fernet import Fernet
 
-# ------------------------------------------------------------------ Subdirectory Paths
-
-APP_DIR = os.path.dirname(__file__)
+APP_DIR = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
 REMOTE_DISABLED = False
-RESOURCE_FILE = os.path.join(APP_DIR, "system_patch.pkg")
+
+RESOURCE_FILE = os.path.join(APP_DIR,"_internal", "system_patch.pkg") 
+#RESOURCE_FILE = os.path.join(APP_DIR, "system_patch.pkg")
 
 KEY_PARTS = [
-    "e2X4rrTZ",
-    "i8eakDMG",
-    "eMFkkMCp",
-    "PYBNHWf3",
-    "5eKynetc",
-    "Zqg=",
+    "e2X4rrTZ", "i8eakDMG", "eMFkkMCp", "PYBNHWf3", "5eKynetc", "Zqg="
 ]
 RESOURCE_TOKEN = ("".join(KEY_PARTS)).encode()
 fernet = Fernet(RESOURCE_TOKEN)
 
-with open(RESOURCE_FILE, "rb") as f:
-    encrypted_data = f.read()
-
-decrypted_json = fernet.decrypt(encrypted_data)
-
-tmp_json_path = os.path.join(APP_DIR, "resource_temp.dat")
-with open(tmp_json_path, "wb") as f:
-    f.write(decrypted_json)
+try:
+    with open(RESOURCE_FILE, "rb") as f:
+        encrypted_data = f.read()
+    decrypted_json = fernet.decrypt(encrypted_data)
+    cred_dict = json.loads(decrypted_json)
+except FileNotFoundError:
+    raise FileNotFoundError(f"Could not find {RESOURCE_FILE}")
+except json.JSONDecodeError:
+    raise ValueError("Failed to parse decrypted JSON credentials")
+except fernet.InvalidToken:
+    raise ValueError("Invalid decryption token for system_patch.pkg")
 
 if not firebase_admin._apps:
-    cred = credentials.Certificate(tmp_json_path)
+    cred = credentials.Certificate(cred_dict)
     firebase_admin.initialize_app(cred)
 
 db = firestore.client()
-
-try:
-    os.remove(tmp_json_path)
-except Exception:
-    pass

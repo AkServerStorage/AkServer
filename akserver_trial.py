@@ -8,7 +8,7 @@ Author:         Akshay Shinde
 Version:        1.0.0
 License:        AkServer Custom Freemium License (See LICENSE.txt)
 
-Copyright © 2025 AkServer. All rights reserved.
+Copyright © 2025-present AkServer. All rights reserved.
 
 This software is proprietary and confidential.
 Redistribution, modification, or reverse engineering is strictly prohibited
@@ -207,13 +207,11 @@ def _apply_clock_sanity(trial: Dict[str, Any], now: int, mono: float) -> Optiona
         _save_trial(trial)
         return trial
 
-    if mono + 1e-6 < last_mono:
-        LOGGER.warning("Monotonic clock anomaly — invalidating trial locally.")
-        trial["expiry_ts"] = min(trial.get("expiry_ts", now), now)
-        trial["last_seen_wall"] = now
+    if mono + 1e-6 < last_mono and (now - last_wall) < 3600:
+        LOGGER.warning("Monotonic clock anomaly — ignoring (likely reboot).")
+    else:
         trial["last_seen_mono"] = mono
-        _save_trial(trial)
-        return trial
+
 
     if (now - last_wall) >= LOCAL_DAY_CHECK_INTERVAL or (mono - last_mono) >= 0.5:
         trial["last_seen_wall"] = now
@@ -264,13 +262,13 @@ def check_trial() -> Dict[str, Any]:
         return {"active": False, "days_left": 0, "expired": True, "source": "local"}
 
     trial = _apply_clock_sanity(trial, now, mono)
-    if now >= int(trial.get("expiry_ts", now)):
-        return {"active": False, "days_left": 0, "expired": True, "source": "local"}
-
     try:
         trial = _maybe_weekly_remote_refresh(trial, now)
     except Exception:
         LOGGER.debug("Firestore refresh skipped")
+
+    if now >= int(trial.get("expiry_ts", now)):
+        return {"active": False, "days_left": 0, "expired": True, "source": "local"}
 
     if now - int(trial.get("last_run", now)) >= MIN_UPDATE_INTERVAL:
         trial["last_run"] = now
