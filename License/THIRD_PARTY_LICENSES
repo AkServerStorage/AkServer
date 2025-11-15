@@ -1,0 +1,2114 @@
+
+=================================
+AkServer - Third-Party Licenses
+=================================
+
+This software, AkServer, uses the following third-party libraries. Each is governed 
+by its own license as described below. All licenses are provided as-is, with proper 
+attribution. AkServer does not claim ownership of any third-party packages.
+
+For copyleft licenses (e.g., GPLv2, LGPLv3), source code for the respective libraries 
+is available upon request or as noted below. For further details, contact: akserverstorage@gmail.com
+
+--------------------------------------------------------------------------------------------------------------------------------
+OVERVIEW
+--------------------------------------------------------------------------------------------------------------------------------
+
+This file lists licenses of third-party libraries used in this project.
+For full license texts, see the corresponding files in the 'license/' folder.
+
+--------------------------------------------------------------------------------------------------------------------------------
+LIBRARY / COMPONENT LIST
+--------------------------------------------------------------------------------------------------------------------------------
+
+1. 	Library Name: pystray
+	Version: 0.19.5
+   	License: GNU Lesser General Public License v3 (LGPLv3)
+   	Author: Moses Palmer
+   	URL: https://github.com/moses-palmer/pystray
+
+   	License Text:  Full license provided in LGPLv3.txt
+   	----------------------------------------------------------------------------------------------------------------------------
+
+2. 	Library Name: six
+   	Version: 1.17.0
+   	License: MIT License
+   	Author: Benjamin Peterson
+   	URL: https://github.com/benjaminp/six
+
+   	License Text: 
+   	----------------------------------------------------------
+	Copyright (c) 2010-2024 Benjamin Peterson
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of
+	this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+3. 	Library Name: ttkbootstrap
+   	Version: 1.14.2
+   	License: MIT License
+   	Author: Israel Dryer
+	URL: https://github.com/israel-dryer/ttkbootstrap  
+
+   	License Text: 
+   	----------------------------------------------------------
+	MIT License
+
+	Copyright (c) 2021 Israel Dryer
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+4. 	Library: Pillow
+   	Version: 10.4.0
+   	License: Historical Permission Notice and Disclaimer (HPND / MIT-CMU) 
+   	Author: Secret Labs AB, Fredrik Lundh, Jeffrey A. Clark, and contributors
+   	URL: https://github.com/python-pillow/Pillow
+
+   	License Text:
+   	----------------------------------------------------------
+	The Python Imaging Library (PIL) is
+
+		Copyright © 1997-2011 by Secret Labs AB
+		Copyright © 1995-2011 by Fredrik Lundh and contributors
+
+	Pillow is the friendly PIL fork. It is
+
+		Copyright © 2010 by Jeffrey A. Clark and contributors
+
+	Like PIL, Pillow is licensed under the open source MIT-CMU License:
+
+	By obtaining, using, and/or copying this software and/or its associated
+	documentation, you agree that you have read, understood, and will comply
+	with the following terms and conditions:
+
+	Permission to use, copy, modify and distribute this software and its
+	documentation for any purpose and without fee is hereby granted,
+	provided that the above copyright notice appears in all copies, and that
+	both that copyright notice and this permission notice appear in supporting
+	documentation, and that the name of Secret Labs AB or the author not be
+	used in advertising or publicity pertaining to distribution of the software
+	without specific, written prior permission.
+
+	SECRET LABS AB AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH REGARD TO THIS
+	SOFTWARE, INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS.
+	IN NO EVENT SHALL SECRET LABS AB OR THE AUTHOR BE LIABLE FOR ANY SPECIAL,
+	INDIRECT OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+	LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE
+	OR OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+	PERFORMANCE OF THIS SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+5. 	Library: qrcode
+   	Version: 8.2
+   	License: BSD-3-Clause
+   	Author: Lincoln Loop
+   	URL: https://github.com/lincolnloop/python-qrcode
+
+   	License Text: 
+   	----------------------------------------------------------
+	Copyright (c) 2011, Lincoln Loop
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+		* Redistributions of source code must retain the above copyright notice,
+		this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice,
+		this list of conditions and the following disclaimer in the documentation
+		and/or other materials provided with the distribution.
+		* Neither the package name nor the names of its contributors may be
+		used to endorse or promote products derived from this software without
+		specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+	-------------------------------------------------------------------------------
+
+
+	Original text and license from the pyqrnative package where this was forked
+	from (http://code.google.com/p/pyqrnative):
+
+	#Ported from the Javascript library by Sam Curren
+	#
+	#QRCode for Javascript
+	#http://d-project.googlecode.com/svn/trunk/misc/qrcode/js/qrcode.js
+	#
+	#Copyright (c) 2009 Kazuhiko Arase
+	#
+	#URL: http://www.d-project.com/
+	#
+	#Licensed under the MIT license:
+	#   http://www.opensource.org/licenses/mit-license.php
+	#
+	# The word "QR Code" is registered trademark of
+	# DENSO WAVE INCORPORATED
+	#   http://www.denso-wave.com/qrcode/faqpatent-e.html
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+
+6. 	Library: colorama
+	Version: 0.4.6
+	License: BSD-3-Clause License
+	Author: Jonathan Hartley
+	URL: https://github.com/tartley/colorama
+
+	License Text: 
+	--------------------------------------------------------
+	Copyright (c) 2010 Jonathan Hartley
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of the copyright holders, nor those of its contributors
+	may be used to endorse or promote products derived from this software without
+	specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+7.	Library: cryptography
+	Version: 45.0.7
+	License: Apache-2.0 OR BSD-3-Clause (Choosing BSD-3-Clause for compliance)
+	Author: The cryptography developers <cryptography-dev@python.org>
+	URL: https://github.com/pyca/cryptography
+
+	License Text : “This library is dual-licensed under Apache-2.0 OR BSD-3-Clause. This project distributes it under the BSD-3-Clause terms.”
+	----------------------------
+	Copyright (c) 2012-2023 The `cryptography` developers. All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+		1. Redistributions of source code must retain the above copyright notice,
+		this list of conditions and the following disclaimer.
+
+		2. Redistributions in binary form must reproduce the above copyright
+		notice, this list of conditions and the following disclaimer in the
+		documentation and/or other materials provided with the distribution.
+
+		3. Neither the name of the copyright holder nor the names of its
+		contributors may be used to endorse or promote products derived from
+		this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+	LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+8.	Library: cffi
+	Version: 1.17.1
+	License: MIT License
+	Author: PyPy Developers
+	URL: https://github.com/python-cffi/cffi
+
+	License Text:
+	-------------------------------------------------------------------------------
+	MIT License
+
+	Copyright (c) 2009-2024, the cffi authors
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+9.	Library: pycparser
+	Version: 2.22
+	License: BSD 3-Clause License
+	Author: Eli Bendersky
+	URL: https://github.com/eliben/pycparser
+
+	License Text:
+	-------------------------------------------------------------------------------
+	BSD 3-Clause License
+
+	Copyright (c) 2008-2015, Eli Bendersky
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+	LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+	
+10.	Library: moviepy
+	Version: 1.0.3
+	License: MIT License
+	Author: Zulko
+	URL: https://github.com/Zulko/moviepy
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+	[OSI Approved License]
+
+	The MIT License (MIT)
+
+	Copyright (c) 2015 Zulko
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+11.	Library: decorator
+	Version: 4.4.2
+	License: BSD 3-Clause License
+	Author: Michele Simionato
+	URL: https://github.com/micheles/decorator
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2005-2023, Michele Simionato
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+		* Redistributions of source code must retain the above copyright notice, this
+		list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above copyright notice,
+		this list of conditions and the following disclaimer in the documentation
+		and/or other materials provided with the distribution.
+		* Neither the name of the project nor the names of its contributors may be used
+		to endorse or promote products derived from this software without specific
+		prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL MICHELE SIMIONATO BE LIABLE FOR ANY.
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+12.	Library: imageio_ffmpeg
+	Version: 0.6.0
+	License: BSD 2-Clause License
+	Author: Imageio
+	URL: https://github.com/imageio/imageio-ffmpeg
+
+	License Text:
+	-------------------------------------------------------------------------------
+	BSD 2-Clause License
+
+	Copyright (c) 2019-2025, imageio
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+	
+13.	Library: imageio
+	Version: 2.37.0
+	License: BSD 2-Clause License
+	Author: imageio developers
+	URL: https://github.com/imageio/imageio
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014-2022, imageio developers
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+14.	Library: numpy
+	Version: 2.3.2
+	License: BSD 3-Clause License
+	Author: The NumPy Developers
+	URL: https://github.com/numpy/numpy
+
+	License Text:
+	-------------------------------------------------------------------------------
+	This software is subject to the terms of the BSD 3-Clause License.
+	-------------------------------------------------------------------------------
+	Copyright (c) 2005-2025, NumPy Developers.
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of the NumPy Developers nor the names of any contributors
+	may be used to endorse or promote products derived from this software without
+	specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	
+	-------------------------------------------------------------------------------
+	This project includes a bundled version of the libdivide library, which is
+	governed by the zlib License.
+	-------------------------------------------------------------------------------
+	zlib License
+	------------
+
+	Copyright (C) 2010 - 2019 ridiculous_fish, <libdivide@ridiculousfish.com>
+	Copyright (C) 2016 - 2019 Kim Walisch, <kim.walisch@gmail.com>
+
+	This software is provided 'as-is', without any express or implied
+	warranty.  In no event will the authors be held liable for any damages
+	arising from the use of this software.
+
+	Permission is granted to anyone to use this software for any purpose,
+	including commercial applications, and to alter it and redistribute it
+	freely, subject to the following restrictions:
+
+	1. The origin of this software must not be misrepresented; you must not
+		claim that you wrote the original software. If you use this software
+		in a product, an acknowledgment in the product documentation would be
+		appreciated but is not required.
+	2. Altered source versions must be plainly marked as such, and must not be
+		misrepresented as being the original software.
+	3. This notice may not be removed or altered from any source distribution.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+15.	Library: proglog
+	Version: 0.1.12
+	License: MIT License
+	Author: Edinburgh Genome Foundry, University of Edinburgh
+	URL: https://github.com/Zulko/proglog
+
+	License Text:
+	-------------------------------------------------------------------------------
+	MIT License
+
+	Copyright (c) 2017 Edinburgh Genome Foundry, University of Edinburgh
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+16.	Library: tqdm
+	Version: 4.67.1
+	License: MIT OR MPL-2.0
+	Author: tqdm developers
+	URL: https://github.com/tqdm/tqdm
+
+	License Text:
+	-------------------------------------------------------------------------------
+	This software is a product of collaborative work and is dual-licensed under
+	both the MIT and MPL-2.0 licenses.
+
+	MIT License (MIT)
+	-----------------
+
+	Copyright (c) 2013 noamraph
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of
+	this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	-------------------------------------------------------------------------------
+	Mozilla Public License 2.0 (MPL-2.0)
+	------------------------------------
+
+	The full text of the MPL-2.0 license is available in the file
+	"licenses/MPL-2.0.txt" within this project's distribution.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+17. 	Library: certifi
+	Version: 2025.8.3
+	License: MPL-2.0 (Mozilla Public License 2.0)
+	Author: Kenneth Reitz and contributors
+	URL: https://github.com/certifi/python-certifi
+
+	License Text:
+	-------------------------------------------------------------------------------
+	This package contains a modified version of ca-bundle.crt:
+
+	ca-bundle.crt -- Bundle of CA Root Certificates
+
+	This is a bundle of X.509 certificates of public Certificate Authorities
+	(CA). These were automatically extracted from Mozilla's root certificates
+	file (certdata.txt).  This file can be found in the mozilla source tree:
+	https://hg.mozilla.org/mozilla-central/file/tip/security/nss/lib/ckfw/builtins/certdata.txt
+	It contains the certificates in PEM format and therefore
+	can be directly used with curl / libcurl / php_curl, or with
+	an Apache+mod_ssl webserver for SSL client authentication.
+	Just configure this file as the SSLCACertificateFile.#
+
+	***** BEGIN LICENSE BLOCK *****
+	This Source Code Form is subject to the terms of the Mozilla Public License,
+	v. 2.0. If a copy of the MPL was not distributed with this file, You can obtain
+	one at http://mozilla.org/MPL/2.0/.
+
+	***** END LICENSE BLOCK *****
+	@(#) $RCSfile: certdata.txt,v $ $Revision: 1.80 $ $Date: 2011/11/03 15:11:58 $
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+18. 	Library: idna
+	Version: 3.10
+	License: BSD-3-Clause License
+	Author: Kim Davies and contributors
+	URL: https://github.com/kjd/idna
+
+	License Text:
+	-------------------------------------------------------------------------------
+	BSD 3-Clause License
+
+	Copyright (c) 2013-2024, Kim Davies and contributors.
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+
+	1. Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	notice, this list of conditions and the following disclaimer in the
+	documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+19. 	Library: requests
+	Version: 2.32.5
+	License: Apache License 2.0
+	Author: Kenneth Reitz and contributors
+	URL: https://github.com/psf/requests
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The full text of the Apache License 2.0 is available in the file
+	"license/Apache-2.0.txt" distributed with this project.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+20. 	Library: urllib3
+	Version: 2.5.0
+	License: MIT License
+	Author: Andrey Petrov and contributors
+	URL: https://github.com/urllib3/urllib3
+
+	License Text:
+
+	-------------------------------------------------------------------------------
+	MIT License
+
+	Copyright (c) 2008-2025 Andrey Petrov and contributors
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+21. 	Library: charset-normalizer
+	Version: 3.4.3
+	License: MIT License
+	Author: TAHRI Ahmed R.
+	URL: https://github.com/Ousret/charset_normalizer
+
+	License Text:
+	-------------------------------------------------------------------------------
+	MIT License
+
+	Copyright (c) 2025 TAHRI Ahmed R.
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+22.	Library: Werkzeug
+	Version: 3.1.3
+	License: BSD 3-Clause License
+	Author: Armin Ronacher and others
+	URL: https://github.com/pallets/werkzeug
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2007 Pallets
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	1. Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+	ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+	LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+23. 	Library: MarkupSafe
+	Version: 3.0.2
+	License: BSD-3-Clause
+	Author: Armin Ronacher and the Pallets team
+	URL: https://palletsprojects.com/p/markupsafe/
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright 2010 Pallets
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+
+	1.  Redistributions of source code must retain the above copyright
+		notice, this list of conditions and the following disclaimer.
+
+	2.  Redistributions in binary form must reproduce the above copyright
+		notice, this list of conditions and the following disclaimer in the
+		documentation and/or other materials provided with the distribution.
+
+	3.  Neither the name of the copyright holder nor the names of its
+		contributors may be used to endorse or promote products derived from
+		this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+24.	Library: pyautogui
+	Version: 0.9.54
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/pyautogui
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of the PyAutoGUI nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+25.	Library: MouseInfo
+	Version: 0.1.3
+	License: GNU General Public License v3.0 (GPLv3) or later
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/mouseinfo
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The full text of the GNU General Public License, Version 3 is available in the
+	file "license/GPLv3.txt" distributed with this project.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+26.	Library: pygetwindow
+	Version: 0.0.9
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/pygetwindow
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of PyGetWindow nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL Al Sweigart BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+27.	Library: pymsgbox
+	Version: 1.0.9
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/PyMsgBox
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of PyMsgBox nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL Al Sweigart BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+28.	Library: pyscreeze
+	Version: 1.0.1
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/pyscreeze
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of PyScreeze nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+29.	Library: pytweening
+	Version: 1.2.0
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/pytweening
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of PyTweening nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL Al Sweigart BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+	----------------------------------------------------------------------------------------------------------------------------
+
+30.	Library: pyperclip
+	Version: 1.9.0
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/pyperclip
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2014, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of Pyperclip nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL Al Sweigart BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+31.	Library: pyrect
+	Version: 0.2.0
+	License: BSD 3-Clause License
+	Author: Al Sweigart
+	URL: https://github.com/asweigart/pyrect
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2018, Al Sweigart
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of PyRect nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL Al Sweigart BE LIABLE FOR ANY
+	DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+32.	Library: pywin32
+	Version: 311
+	License: Python Software Foundation License 2.0 (PSF-2.0)
+	Author: Mark Hammond and contributors
+	URL: https://github.com/mhammond/pywin32
+
+	License Text:
+	-------------------------------------------------------------------------------
+	PYTHON SOFTWARE FOUNDATION LICENSE VERSION 2
+
+	1. This LICENSE AGREEMENT is between the Python Software Foundation ("PSF"), and
+	the Individual or Organization ("Licensee") accessing and otherwise using
+	this software ("Python") in source or binary form and its associated
+	documentation.
+
+	2. Subject to the terms and conditions of this License Agreement, PSF hereby
+	grants Licensee a nonexclusive, royalty-free, world-wide license to reproduce,
+	analyze, test, perform and/or display publicly, prepare derivative works,
+	distribute, and otherwise use Python alone or in any derivative version,
+	provided, however, that PSF's License Agreement and PSF's notice of copyright,
+	i.e., "Copyright © 2001-2024 Python Software Foundation; All Rights Reserved"
+	are retained in Python alone or in any derivative version prepared by
+	Licensee.
+
+	3. In the event Licensee prepares a derivative work that is based on or
+	incorporates Python or any part thereof, and wants to make the derivative
+	work available to others as provided herein, then Licensee hereby agrees to
+	include in any such work a brief summary of the changes made to Python.
+
+	4. PSF is making Python available to Licensee on an "AS IS" basis. PSF MAKES NO
+	REPRESENTATIONS OR WARRANTIES, EXPRESS OR IMPLIED. BY WAY OF EXAMPLE, BUT NOT
+	LIMITATION, PSF MAKES NO AND DISCLAIMS ANY REPRESENTATION OR WARRANTY OF
+	MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR PURPOSE OR THAT THE USE OF
+	PYTHON WILL NOT INFRINGE ANY THIRD PARTY RIGHTS.
+
+	5. PSF SHALL NOT BE LIABLE TO LICENSEE OR ANY OTHER USERS OF PYTHON FOR ANY
+	INCIDENTAL, SPECIAL, OR CONSEQUENTIAL DAMAGES OR LOSS AS A RESULT OF
+	MODIFYING, DISTRIBUTING, OR OTHERWISE USING PYTHON, OR ANY DERIVATIVE
+	THEREOF, EVEN IF ADVISED OF THE POSSIBILITY THEREOF.
+
+	6. This License Agreement will automatically terminate upon a material breach of
+	its terms and conditions.
+
+	7. Nothing in this License Agreement shall be deemed to create any relationship
+	of agency, partnership, or joint venture between PSF and Licensee. This
+	License Agreement does not grant permission to use PSF trademarks or trade
+	name in a trademark sense to endorse or promote products or services of
+	Licensee, or any third party.
+
+	8. By copying, installing or otherwise using Python, Licensee agrees to be bound
+	by the terms and conditions of this License Agreement.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+33.	Library: keyring
+	Version: 25.6.0
+	License: MIT License
+	Author: Jaraco (Jason R. Coombs and contributors)
+	URL: https://github.com/jaraco/keyring
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to
+	deal in the Software without restriction, including without limitation the
+	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	sell copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+	IN THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+34.	Library: jaraco.classes
+	Version: 3.4.0
+	License: MIT License
+	Author: Jason R. Coombs and contributors
+	URL: https://github.com/jaraco/jaraco.classes
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to
+	deal in the Software without restriction, including without limitation the
+	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	sell copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+	IN THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+35.	Library: more-itertools
+	Version: 10.8.0
+	License: MIT License
+	Author: Erik Rose
+	URL: https://github.com/more-itertools/more-itertools
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2012 Erik Rose
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of
+	this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies
+	of the Software, and to permit persons to whom the Software is furnished to do
+	so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+36.	Library: pywin32-ctypes
+	Version: 0.2.3
+	License: BSD-3-Clause
+	Author: Enthought Inc.
+	URL: https://github.com/enthought/pywin32-ctypes
+
+	License Text:
+	-------------------------------------------------------------------------------
+	This software is OSI Certified Open Source Software.
+	OSI Certified is a certification mark of the Open Source Initiative.
+
+	Copyright (c) 2014, Enthought, Inc.
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+	* Neither the name of Enthought, Inc. nor the names of its contributors may
+	be used to endorse or promote products derived from this software without
+	specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+	ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+	WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+	ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+	LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+	ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+37.	Library: jaraco.context
+	Version: 6.0.1
+	License: MIT License
+	Author: Jason R. Coombs and contributors
+	URL: https://github.com/jaraco/jaraco.context
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2024 Jason R. Coombs
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to
+	deal in the Software without restriction, including without limitation the
+	rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+	sell copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+	FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+	IN THE SOFTWARE.
+	----------------------------------------------------------------------------------------------------------------------------
+
+38.	Library: jaraco.functools
+	Version: 4.3.0
+	License: MIT License
+	Author: Jason R. Coombs and contributors
+	URL: https://github.com/jaraco/jaraco.functools
+
+	License Text:
+	-------------------------------------------------------------------------------
+	MIT License
+
+	Copyright (c) 2024 Jason R. Coombs
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+	associated documentation files (the "Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the
+	following conditions:
+
+	The above copyright notice and this permission notice shall be included in all copies or substantial
+	portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT
+	LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO
+	EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE
+	USE OR OTHER DEALINGS IN THE SOFTWARE.
+	----------------------------------------------------------------------------------------------------------------------------
+
+39.	Library: Jinja2
+	Version: 3.1.6
+	License: BSD 3-Clause License
+	Author: Pallets
+	URL: https://github.com/pallets/jinja
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright 2007 Pallets
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+
+	1. Redistributions of source code must retain the above copyright
+	   notice, this list of conditions and the following disclaimer.
+
+	2. Redistributions in binary form must reproduce the above copyright
+	   notice, this list of conditions and the following disclaimer in the
+	   documentation and/or other materials provided with the distribution.
+
+	3. Neither the name of the copyright holder nor the names of its
+	   contributors may be used to endorse or promote products derived from
+	   this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+	PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+	PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+	LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+	NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+	SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------
+
+40.	Library: PhotoSwipe
+	Version: 5.4.4
+	License: MIT License
+	Author: Dmitry Semenov and contributors
+	URL: https://photoswipe.com/
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2014-2022 Dmitry Semenov, https://dimsemenov.com
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+41. 	Library: firebase_admin
+	Version: 7.1.0
+	License: Apache-2.0 License
+	Author: Firebase Admin SDK Team
+	URL: https://github.com/firebase/firebase-admin-python
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'license/Apache-2.0.txt' for full license text.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+	
+42.	Library: anyio
+	Version: 4.10.0
+	License: MIT License
+	Author: Alex Grönholm
+	URL: https://github.com/agronholm/anyio
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2018 Alex Grönholm
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of
+	this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------			
+
+43. 	Library: CacheControl
+	Version: 0.14.3
+	License: Apache-2.0 License
+	Author: Eric Larson
+	URL: https://github.com/ionrock/cachecontrol
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright 2012-2021  Eric Larson
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+44. 	Library: cachetools
+	Version: 5.5.2
+	License: MIT License
+	Author: Thomas Kemmer
+	URL: https://github.com/tkem/cachetools
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2014-2025 Thomas Kemmer
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy of
+	this software and associated documentation files (the "Software"), to deal in
+	the Software without restriction, including without limitation the rights to
+	use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of
+	the Software, and to permit persons to whom the Software is furnished to do so,
+	subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+	FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+	COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+	IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+	CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+45. 	Library: google-api-core
+	Version: 2.25.1
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-api-core
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+46. 	Library: google-auth
+	Version: 2.40.3
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/google-auth-library-python
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+47. 	Library: google-cloud-core
+	Version: 2.4.3
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-cloud-core
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+48. 	Library: google-cloud-firestore
+	Version: 2.21.0
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-firestore
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+	
+49. 	Library: google-cloud-storage
+	Version: 3.3.1
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-storage
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+50. 	Library: google-crc32c
+	Version: 1.7.1
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-crc32c
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+51. 	Library: google-resumable-media
+	Version: 2.7.2
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-resumable-media
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+52. 	Library: googleapis-common-protos
+	Version: 1.70.0
+	License: Apache-2.0 License
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-common-protos
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+53. 	Library: grpcio
+	Version: 1.74.0
+	License: Apache-2.0 License
+	Author: The gRPC Authors
+	URL: https://github.com/grpc/grpc
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+54. 	Library: grpcio-status
+	Version: 1.74.0
+	License: Apache-2.0 License
+	Author: The gRPC Authors
+	URL: https://github.com/grpc/grpc
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+	-------------------------------------------------------------------------------
+
+55. 	Library: h11
+	Version: 0.16.0
+	License: MIT License
+	Author: Nathaniel J. Smith and other contributors
+	URL: https://github.com/python-hyper/h11
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2016 Nathaniel J. Smith <njs@pobox.com> and other contributors
+
+	Permission is hereby granted, free of charge, to any person obtaining
+	a copy of this software and associated documentation files (the
+	"Software"), to deal in the Software without restriction, including
+	without limitation the rights to use, copy, modify, merge, publish,
+	distribute, sublicense, and/or sell copies of the Software, and to
+	permit persons to whom the Software is furnished to do so, subject to
+	the following conditions:
+
+	The above copyright notice and this permission notice shall be
+	included in all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+	EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+	NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+	LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+	OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+	WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+56. 	Library: h2
+	Version: 4.3.0
+	License: MIT License
+	Author: Cory Benfield and contributors
+	URL: https://github.com/python-hyper/hyper-h2
+
+	License Text:
+
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2015-2020 Cory Benfield and contributors
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+57. 	Library: hpack
+	Version: 4.1.0
+	License: MIT License
+	Author: Hyperframe contributors
+	URL: https://github.com/python-hyper/hpack
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2014 Cory Benfield
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+58. 	Library: httpcore
+	Version: 1.0.9
+	License: MIT License
+	Author: Encode OSS
+	URL: https://github.com/encode/httpcore
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright © 2020, [Encode OSS Ltd](https://www.encode.io/).
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this
+	list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+	this list of conditions and the following disclaimer in the documentation
+	and/or other materials provided with the distribution.
+
+	* Neither the name of the copyright holder nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+	DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+	FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+	DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+	SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+	CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+	OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+59. 	Library: httpx
+	Version: 0.28.1
+	License: MIT License
+	Author: Encode OSS
+	URL: https://github.com/encode/httpx
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright © 2019, [Encode OSS Ltd](https://www.encode.io/).
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following 	conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer 	in the documentation and/or other materials provided with the distribution.
+
+	* Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products derived 	from this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT 	NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL 	THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 	(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE 	OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+60. 	Library: hyperframe
+	Version: 6.1.0
+	License: MIT License
+	Author: Hyperframe contributors
+	URL: https://github.com/python-hyper/hyperframe
+
+	License Text:
+
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2014 Cory Benfield
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in
+	all copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+	THE SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+61. 	Library: msgpack
+	Version: 1.1.1
+	License: MIT License
+	Author: Naoki 
+	URL: https://github.com/msgpack/msgpack-python
+
+	License Text:
+
+	-------------------------------------------------------------------------------
+	Copyright (C) 2008-2011 INADA Naoki <songofacandy@gmail.com>
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+		http://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+62. 	Library: proto-plus
+	Version: 1.26.1
+	License: Apache License 2.0
+	Author: Google LLC
+	URL: https://github.com/googleapis/python-proto-plus
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Apache License, Version 2.0.
+	See the separate 'Apache-2.0.txt' for full license text.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+63. 	Library: protobuf
+	Version: 6.32.0
+	License: BSD-3-Clause License
+	Author: Google LLC
+	URL: https://github.com/protocolbuffers/protobuf
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright 2008-2025 Google LLC. All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are
+	met:
+
+		* Redistributions of source code must retain the above copyright
+	notice, this list of conditions and the following disclaimer.
+		* Redistributions in binary form must reproduce the above
+	copyright notice, this list of conditions and the following disclaimer
+	in the documentation and/or other materials provided with the
+	distribution.
+		* Neither the name of Google Inc. nor the names of its
+	contributors may be used to endorse or promote products derived from
+	this software without specific prior written permission.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+	"AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+	LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+	A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+	OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+	LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+	DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+	THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+	OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+	Code generated by the Protocol Buffer compiler is owned by the owner
+	of the input file used when generating it. This code is not
+	standalone and requires a support library to be linked with it. This
+	support library is itself covered by the above license.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+64. 	Library: pyasn1
+	Version: 0.6.1
+	License: BSD-2-Clause License
+	Author: Ilya Etingof 
+	URL: https://github.com/etingof/pyasn1
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2005-2025, Ilya Etingof <etingof@gmail.com>
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, 
+		this list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+		this list of conditions and the following disclaimer in the documentation
+		and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+	ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+	LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE. 
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+65. 	Library: pyasn1-modules
+	Version: 0.4.2
+	License: BSD-2-Clause License
+	Author: Ilya Etingof
+	URL: https://github.com/etingof/pyasn1-modules
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright (c) 2005-2025, Ilya Etingof <etingof@gmail.com>
+	All rights reserved.
+
+	Redistribution and use in source and binary forms, with or without
+	modification, are permitted provided that the following conditions are met:
+
+	* Redistributions of source code must retain the above copyright notice, 
+		this list of conditions and the following disclaimer.
+
+	* Redistributions in binary form must reproduce the above copyright notice,
+		this list of conditions and the following disclaimer in the documentation
+		and/or other materials provided with the distribution.
+
+	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+	AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE 
+	IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE 
+	ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+	LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+	CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+	SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+	INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+	CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+	ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+	POSSIBILITY OF SUCH DAMAGE. 
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+66. 	Library: pyjwt
+	Version: 2.10.1
+	License: MIT License
+	Author: José Padilla
+	URL: https://github.com/jpadilla/pyjwt
+
+	License Text:
+	-------------------------------------------------------------------------------
+	The MIT License (MIT)
+
+	Copyright (c) 2015-2022 José Padilla
+
+	Permission is hereby granted, free of charge, to any person obtaining a copy
+	of this software and associated documentation files (the "Software"), to deal
+	in the Software without restriction, including without limitation the rights
+	to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+	copies of the Software, and to permit persons to whom the Software is
+	furnished to do so, subject to the following conditions:
+
+	The above copyright notice and this permission notice shall be included in all
+	copies or substantial portions of the Software.
+
+	THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+	IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+	FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+	AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+	LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+	SOFTWARE.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+67. 	Library: rsa
+	Version: 4.9.1
+	License: MIT License
+	Author: Sybren A. Stüvel
+	URL: https://github.com/sybrenstuvel/python-rsa
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Copyright 2011 Sybren A. Stüvel <sybren@stuvel.eu>
+
+	Licensed under the Apache License, Version 2.0 (the "License");
+	you may not use this file except in compliance with the License.
+	You may obtain a copy of the License at
+
+	https://www.apache.org/licenses/LICENSE-2.0
+
+	Unless required by applicable law or agreed to in writing, software
+	distributed under the License is distributed on an "AS IS" BASIS,
+	WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+	See the License for the specific language governing permissions and
+	limitations under the License.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+68. 	Library: sniffio
+	Version: 1.3.1
+	License: MIT License
+	Author: Tom Christie
+	URL: https://github.com/agronholm/sniffio
+
+	License Text:
+	-------------------------------------------------------------------------------
+	This software is made available under the terms of *either* of the
+	licenses found in LICENSE.APACHE2 or LICENSE.MIT. Contributions to are
+	made under the terms of *both* these licenses.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+69. 	Library: typing_extensions
+
+	Version: 4.15.0
+	License: Python Software Foundation License 2.0 (PSF-2.0)
+	Author: Python Software Foundation
+	URL: https://github.com/python/typing_extensions
+
+	License Text:
+	-------------------------------------------------------------------------------
+	Licensed under the Python Software Foundation License Version 2.
+	See the separate 'PSF-2.0.txt' for the full license text.
+
+	----------------------------------------------------------------------------------------------------------------------------		
+
+70.	Library/Specification: SVG (Scalable Vector Graphics) — W3C Recommendation
+	Version: Current W3C Recommendation (https://www.w3.org/TR/SVG/)
+	License: W3C Software and Document License
+	Author: World Wide Web Consortium (W3C)
+	URL: https://www.w3.org/Graphics/SVG/
+
+	License Text:
+	-------------------------------------------------------------------------------
+	W3C® SOFTWARE AND DOCUMENT NOTICE AND LICENSE
+
+	Copyright © 1994–2024 World Wide Web Consortium, (Massachusetts Institute of Technology,
+	European Research Consortium for Informatics and Mathematics, Keio University, Beihang).
+	All Rights Reserved.
+
+	Permission to copy, modify, and distribute this work, with or without modification,
+	for any purpose and without fee or royalty is hereby granted, provided that you
+	include the full text of this NOTICE and LICENSE in any copy of such work and that
+	you cause any modified version to be clearly labeled as such.
+
+	THE WORK IS PROVIDED "AS IS," AND W3C SHALL NOT BE LIABLE FOR ANY DAMAGES
+	WHATSOEVER RESULTING FROM THE USE OF THIS WORK.
+
+	----------------------------------------------------------------------------------------------------------------------------								
+
+NOTES:
+- Users must comply with all licenses listed above.
+- All source and license files from third-party libraries are included
+  in the distribution where legally required.
+- This document is updated periodically to reflect changes in dependencies.
+
+-------------------------------------------------------------
+END OF THIRD PARTY LICENSES
+-------------------------------------------------------------
