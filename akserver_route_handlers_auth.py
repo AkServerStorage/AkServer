@@ -1,20 +1,20 @@
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 
 """
 Description:    Contains core route handling logic for authentication and user management.
 Author:         Akshay Shinde
+Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
 # ------------------------------------------------------------------ Python Standard Library Imports
@@ -27,11 +27,9 @@ from urllib.parse import parse_qs, quote, unquote, urlparse
 from akserver_config import LOGGER as server_logger
 from akserver_auth import DEVICE_TOKEN_COOKIE_NAME
 from akserver_html import get_html
-from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ Login function
 
-@trial_required
 def handle_get_login_page(handler, message):
     """Handles GET requests for the /login path."""
 
@@ -51,7 +49,6 @@ def handle_get_login_page(handler, message):
     else:
         handler._redirect("/")
 
-@trial_required
 def handle_post_login(handler):
     """Handles POST requests for the /login path."""
 
@@ -124,7 +121,6 @@ def handle_get_logout(handler, message=None):
 
 # ------------------------------------------------------------------ OTP function
 
-@trial_required
 def handle_get_request_otp(handler): 
     """Handles GET requests for the /request_otp path."""
 
@@ -161,7 +157,6 @@ def handle_get_request_otp(handler):
 
 # ------------------------------------------------------------------ Device function
 
-@trial_required
 def handle_post_submit_device_name(handler):
     """Handles POST requests for /submit_device_name."""
 

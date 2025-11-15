@@ -1,20 +1,19 @@
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 
 """
 Description:    A collection of reusable utility functions for the akserver GUI.
 Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present AkServer. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
 # ------------------------------------------------------------------ Python Standard Library Imports
@@ -134,13 +133,15 @@ class LicensesWindow(tk.Toplevel):
         self.geometry("950x650")
         self.configure(bg="#ffffff")
 
+        # Colors & Fonts
         self.bg_color = "#ffffff"
         self.nav_bg = "#f9fbfc"
         self.active_bg = "#d4e5ff"
         self.accent_color = "#2a8bff"
         self.font_family = ("Segoe UI", 10)
-        self.mono_font = ("Consolas", 10)
+        self.mono_font = ("Consolas", 10)  # monospaced for proper alignment
 
+        # Window icon
         icon_path = os.path.join(STATIC_DIR, "akserver_icon.ico")
         if os.path.exists(icon_path):
             try:
@@ -153,30 +154,44 @@ class LicensesWindow(tk.Toplevel):
         else:
             print(f"[WARN] Icon file not found: {icon_path}")
 
-
+        # Left navigation frame
         self.nav_frame = tk.Frame(self, bg=self.nav_bg, width=260)
         self.nav_frame.pack(side="left", fill="y")
 
+        # Right content frame
         self.content_frame = tk.Frame(self, bg=self.bg_color)
         self.content_frame.pack(side="right", fill="both", expand=True)
 
-        self.doc_title = tk.Label(self.content_frame, text="", font=("Segoe UI",14,"bold"),
-                                  bg=self.bg_color, fg="#05445e", anchor="w")
+        # Document title
+        self.doc_title = tk.Label(
+            self.content_frame, text="", font=("Segoe UI",14,"bold"),
+            bg=self.bg_color, fg="#05445e", anchor="w"
+        )
         self.doc_title.pack(fill="x", padx=10, pady=(10,5))
 
-        self.text_widget = scrolledtext.ScrolledText(self.content_frame, wrap="word",
-                                                     font=self.mono_font, bg=self.bg_color)
+        # ScrolledText with horizontal scroll
+        self.text_widget = scrolledtext.ScrolledText(
+            self.content_frame, wrap="none", font=self.mono_font, bg=self.bg_color
+        )
         self.text_widget.pack(fill="both", expand=True, padx=10, pady=(0,10))
 
+        # Horizontal scrollbar
+        h_scroll = tk.Scrollbar(self.content_frame, orient="horizontal", command=self.text_widget.xview)
+        h_scroll.pack(side="bottom", fill="x")
+        self.text_widget.configure(xscrollcommand=h_scroll.set)
+
+        # Load documents
         self.docs = self.load_docs()
         self.buttons = []
         self.active_btn = None
         self.create_nav_buttons()
 
+        # Select first document by default
         if self.docs:
             self.select_doc(0)
 
     def load_docs(self):
+        """Load all license/privacy text files from LICENSES_FOLDER"""
         docs = []
         for fname in os.listdir(LICENSES_FOLDER):
             if fname.lower().endswith(".txt") or fname.upper() == "LICENSE":
@@ -188,22 +203,32 @@ class LicensesWindow(tk.Toplevel):
         return docs
 
     def create_nav_buttons(self):
+        """Create clickable navigation buttons on the left panel"""
         for index, doc in enumerate(self.docs):
-            btn = tk.Label(self.nav_frame, text=doc["name"], bg=self.nav_bg, fg="#222",
-                           anchor="w", padx=15, pady=8, font=self.font_family, cursor="hand2")
+            btn = tk.Label(
+                self.nav_frame, text=doc["name"], bg=self.nav_bg, fg="#222",
+                anchor="w", padx=15, pady=8, font=self.font_family, cursor="hand2"
+            )
             btn.pack(fill="x")
             btn.bind("<Enter>", lambda e, b=btn: b.configure(bg="#e6f0ff"))
-            btn.bind("<Leave>", lambda e, b=btn: b.configure(bg=self.active_bg if b==self.active_btn else self.nav_bg))
+            btn.bind("<Leave>", lambda e, b=btn: b.configure(
+                bg=self.active_bg if b==self.active_btn else self.nav_bg))
             btn.bind("<Button-1>", lambda e, idx=index: self.select_doc(idx))
             self.buttons.append(btn)
 
     def select_doc(self, index):
+        """Display selected document content"""
         doc = self.docs[index]
+
+        # Reset previous button
         if self.active_btn:
             self.active_btn.configure(bg=self.nav_bg, fg="#222", font=self.font_family)
+
+        # Highlight active button
         self.active_btn = self.buttons[index]
         self.active_btn.configure(bg=self.active_bg, fg="#05445e", font=("Segoe UI",10,"bold"))
 
+        # Load and display file content
         self.text_widget.delete("1.0", tk.END)
         self.doc_title.configure(text=doc["name"])
         try:
@@ -213,3 +238,5 @@ class LicensesWindow(tk.Toplevel):
             content = f"Error reading file: {e}"
         self.text_widget.insert(tk.END, content)
         self.text_widget.yview_moveto(0)
+
+

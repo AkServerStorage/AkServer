@@ -1,19 +1,18 @@
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 """
 Description:    Contains route handling logic for file views, uploads, and downloads.
 Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present AkServer. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
 # ------------------------------------------------------------------ Python Standard Library Imports
@@ -33,11 +32,9 @@ from akserver_config import CONFIG
 from akserver_ssl_util import generate_download_token, verify_download_token, verify_upload_token
 from akserver_route_handlers_thumbnails import generate_thumbnail_for_video
 from akserver_route_handlers import generic_file_svg, _sanitize_relative_path, format_file_size
-from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ File Browser
 
-@trial_required
 def handle_get_view_files(handler):
 
     def build_breadcrumb(path):
@@ -410,7 +407,6 @@ def handle_get_view_files(handler):
 
 # ------------------------------------------------------------------ File Download & Streaming
 
-@trial_required
 def handle_get_file(handler):
 
     try:
@@ -736,7 +732,6 @@ def handle_post_upload(handler):
             500,
         )
 
-@trial_required
 def route_post_upload(handler):
     """
     Wrapper for POST /upload with robust error handling.
@@ -761,7 +756,6 @@ def route_post_upload(handler):
             500,
         )
 
-@trial_required
 def handle_post_download(handler):
     """Fast, secure streaming download handler."""
 

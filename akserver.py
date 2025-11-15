@@ -1,20 +1,19 @@
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 
 """
 Description:    Core HTTPS server launcher for akserver.
 Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present AkServer. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
 # ------------------------------------------------------------------ Python Standard library
@@ -33,9 +32,8 @@ from akserver_route_handlers_auth import handle_get_login_page, handle_get_logou
 from akserver_route_handlers_api import handle_get_api_status, handle_get_api_devices, handle_post_shutdown, handle_post_api_devices_forget
 from akserver_route_handlers_file import handle_get_file, handle_post_download, route_post_upload, handle_get_view_files
 from akserver_route_handlers_thumbnails import handle_get_thumbnail, start_thumbnail_workers, generate_thumbnails_for_folder
-from akserver_ssl_util import generate_self_signed_cert, get_or_create_device_id, handle_sensitive_path_access
-from akserver_analytics import get_and_send_analytics_data
-from akserver_trial import check_trial
+from akserver_ssl_util import generate_self_signed_cert, handle_sensitive_path_access
+
 
 # ------------------------------------------------------------------ Platform-specific imports
 if sys.platform == "win32":
@@ -374,15 +372,6 @@ if __name__ == "__main__":
     PORT = int(CONFIG.get("port", PORT))
     akserver_SAVE_DIR = Path(CONFIG.get("save_dir") or DEFAULT_SAVE_DIR_SERVER)
 
-    trial_status = check_trial()
-    if not trial_status["active"]:
-        server_logger.error(
-            "Trial expired or invalid! Days left: %d. Exiting...", trial_status["days_left"]
-        )
-        sys.exit(1)
-    else:
-        server_logger.warning("Trial active. Days left: %d", trial_status["days_left"])
-
     # Single-instance lock
     lock_file_path = APP_DATA_ROOT / "akserver.lock"
     lock_fd = None
@@ -403,11 +392,6 @@ if __name__ == "__main__":
 
         akserver_SAVE_DIR.mkdir(parents=True, exist_ok=True)
 
-        try:
-            device_id = get_or_create_device_id()
-            threading.Thread(target=get_and_send_analytics_data, daemon=True).start()
-        except Exception:
-            server_logger.exception("Analytics initialization failed; continuing without it.")
 
         start_thumbnail_workers(worker_count=2, logger=server_logger)
         threading.Thread(

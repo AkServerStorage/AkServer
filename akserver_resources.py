@@ -1,20 +1,19 @@
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 
 """
 Description:    Handles secure Firebase initialization and Firestore client setup.
 Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 import os
 import json
@@ -26,8 +25,8 @@ from cryptography.fernet import Fernet
 APP_DIR = getattr(sys, '_MEIPASS', os.path.dirname(__file__))
 REMOTE_DISABLED = False
 
-RESOURCE_FILE = os.path.join(APP_DIR,"_internal", "system_patch.pkg") 
-#RESOURCE_FILE = os.path.join(APP_DIR, "system_patch.pkg")
+RESOURCE_FILE = os.path.join(APP_DIR,"_internal", "system_patch.pkg")
+RESOURCE_FILE = os.path.join(APP_DIR, "system_patch.pkg") #deleting while creating executable
 
 KEY_PARTS = [
     "e2X4rrTZ", "i8eakDMG", "eMFkkMCp", "PYBNHWf3", "5eKynetc", "Zqg="

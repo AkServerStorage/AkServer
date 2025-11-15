@@ -1,19 +1,18 @@
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 """
 Description:    Contains route handling logic for file views, uploads, previews.
 Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present AkServer. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
 # ------------------------------------------------------------------ Python Standard Library Imports
@@ -24,8 +23,6 @@ import mimetypes, os, sys, platform, re, shutil, time, unicodedata
 
 from akserver_html import get_html
 from akserver_ssl_util import generate_download_token, get_or_create_device_id
-from akserver_trial import check_trial
-from akserver_trial_status import trial_required
 
 # ------------------------------------------------------------------ Constants & Configuration
 
@@ -140,7 +137,6 @@ def _sanitize_relative_path(rel_path: str) -> str:
 
 # ------------------------------------------------------------------ General Utility Functions
 
-@trial_required
 def handle_get_root(handler, message=""):
     """Handles GET requests for the root path ('/')."""
     
@@ -154,17 +150,9 @@ def handle_get_root(handler, message=""):
         else ""
     )
 
-    trial_status = check_trial()
-    trial_message_html = (
-        f"<div class='trial-info'>Trial active — Days left: {trial_status['days_left']}</div>"
-        if trial_status["active"]
-        else "<div class='trial-expired'>Trial expired! Please contact support.</div>"
-    )
-
     context = {
         "logout_placeholder": logout_link,
         "message_placeholder": f"<div class='message'>{message}</div>" if message else "",
-        "trial_message_placeholder": trial_message_html,
         "upload_token": generate_download_token("upload_access"),
         "device_id": get_or_create_device_id(),
         "cache_buster": int(time.time()),

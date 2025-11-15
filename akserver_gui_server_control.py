@@ -1,21 +1,20 @@
 
 # =============================================================================
-# AkServer – Proprietary Software Module
+# AkServer –  Software Module
 # =============================================================================
 
 """
 Description:    Handles starting/stopping akserver from GUI safely.
 Author:         Akshay Shinde
 Version:        1.0.0
-License:        AkServer Custom Freemium License (See LICENSE.txt)
+License:        MIT License - See LICENSE file in the project root
+                https://github.com/AkServerStorage/AkServer/blob/main/LICENSE
 
-Copyright © 2025-present AkServer. All rights reserved.
+Copyright © 2025 Akshay Shinde. Open Source.
 
-This software is proprietary and confidential.
-Redistribution, modification, or reverse engineering is strictly prohibited
-unless permitted by a commercial license agreement.
+Permission is hereby granted to use, copy, modify, merge, publish, distribute,
+sublicense, and/or sell copies of this software.
 
-For license terms, visit: https://akserverstorage.github.io/akserver_announcement/license.html
 """
 
 # ------------------------------------------------------------------  Python Standard Library
@@ -33,15 +32,10 @@ from akserver_config import CONFIG, LOGGER as server_logger, PORT
 
 # ------------------------------------------------------------------ Helpers
 
-def _get_trial_status(app):
-    """Return trial info dict: {'active': bool, 'days_left': int}"""
-    return getattr(app, "get_trial_status", lambda: {"active": True, "days_left": 0})()
-
 def _set_server_button_state(app, enabled=True):
-    """Safely update server button state based on trial and busy status"""
+    """Safely update server button state based on status"""
     if getattr(app, "server_button", None) and app.server_button.winfo_exists():
-        trial_active = _get_trial_status(app).get("active", True)
-        state = "normal" if enabled and trial_active else "disabled"
+        state = "normal" if enabled else "disabled"
         app.root.after(0, lambda: app.server_button.config(state=state))
 
 def _report_error(app, message):
@@ -68,16 +62,11 @@ def check_server_status_api():
 def update_server_ui_state(app, is_running, status_text=None, status_color=None):
     """Update server label and button safely"""
     try:
-        trial_info = _get_trial_status(app)
-        trial_active = trial_info.get("active", True)
-        days_left = trial_info.get("days_left", 0)
-
         if getattr(app, "server_status_label", None) and app.server_status_label.winfo_exists():
             default_text = "Server Online" if is_running else "Server Offline"
             default_color = SUCCESS if is_running else DANGER
-            trial_text = f"Trial active — {days_left} days remaining" if trial_active else "Trial Expired — Upgrade required!"
-            combined_text = f"{status_text or default_text} | {trial_text}"
-            combined_color = DANGER if not trial_active else (status_color or default_color)
+            combined_text = f"{status_text or default_text} | Free Forever"
+            combined_color = status_color or default_color
             app.server_status_label.config(text=combined_text, bootstyle=combined_color)
 
         if getattr(app, "server_button", None) and app.server_button.winfo_exists():
