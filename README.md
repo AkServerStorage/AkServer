@@ -14,7 +14,7 @@ Sync files locally. No internet. No accounts.
 - Python + Web UI
 - Windows .exe
 
-[Download v1.0.0](https://github.com/AkServerStorage/AkServer/releases/latest)  
+[Download v1.0.0]([https://github.com/AkServerStorage/AkServer/releases/latest](https://github.com/AkServerStorage/AkServerStorage.github.io/releases/edit/AkServer))  
 [Website](https://akserverstorage.github.io)
 
 ## From Closed to Open
