@@ -4,7 +4,9 @@
 
 > _"I'm a mechanical engineer, not a software dev.  
 > I built AkServer because I hate cloud spying.  
-> Started closed-source. Now fully open (MIT).  
+> Started closed-source. Now fully open (MIT). Built from zero cash one laptop open source gut
+> better than paid tools
+> Paid version ; Reach me out  - complelte customized tool as per your requirement, no if no buts will be asked .  Mechanical engineer sells solutions not questions.
 > Join me."_
 
 Sync files locally. No internet. No accounts.
@@ -16,6 +18,8 @@ Sync files locally. No internet. No accounts.
 
 [Download v1.0.0]([https://github.com/AkServerStorage/AkServer/releases/latest](https://github.com/AkServerStorage/AkServerStorage.github.io/releases/edit/AkServer))  
 [Website](https://akserverstorage.github.io)
+
+
 
 ## From Closed to Open
 
