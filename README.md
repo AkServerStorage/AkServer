@@ -6,7 +6,7 @@
 > I built AkServer because I hate cloud spying.  
 > Started closed-source. Now fully open (MIT).
 
-> _Built from zero cash with one laptop with open source codes.
+> Built from zero cash with one laptop with open source codes.
 > 
 > better than paid tools
 > 
