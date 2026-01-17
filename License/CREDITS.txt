@@ -9,4 +9,4 @@ Acknowledgments:
 - We gratefully acknowledge UXWing for providing high-quality, free icons that enhance the visual appeal and usability of AkServer.
 - AkServer also uses various open-source libraries; please refer to THIRD_PARTY_LICENSES.txt for full acknowledgments and license details.
 
-© 2025–present Akshay Ashok Shinde (AkServer). Open source.
+© 2025–present Akshay Shinde (AkServer). Open source.
